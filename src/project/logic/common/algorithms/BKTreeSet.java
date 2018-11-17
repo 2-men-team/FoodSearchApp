@@ -15,7 +15,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public final class BKTreeSet extends AbstractSet<String> implements SimilaritySet<String>, Serializable {
-    private static final long serialVersionUID = 7209147984236242755L;
+    private static final long serialVersionUID = -2908922341930943423L;
     public static final int DEFAULT_THRESHOLD = 2;
 
     private Node root;
@@ -30,7 +30,7 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
     public BKTreeSet(@NotNull WordMetric metric, int threshold) {
         super();
         this.threshold = validateThreshold(threshold);
-        this.metric = metric;
+        this.metric = Objects.requireNonNull(metric);
     }
 
     private static int validateThreshold(int val) {
@@ -46,26 +46,15 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
         this.threshold = validateThreshold(threshold);
     }
 
-    private static final class Node implements Serializable {
-        private static final long serialVersionUID = 652665808894847181L;
-
-        private String word;
-        private SortedMap<Integer, Node> next;
-
-        private Node(String word) {
-            this.word = word;
-            this.next = new TreeMap<>();
-        }
-    }
-
-    public static final class Entry implements SimilaritySet.Entry<String>, Serializable {
-        private final static long serialVersionUID = 478885803938387288L;
-        private String word;
+    private static final class Node implements Entry<String>, Serializable {
+        private final static long serialVersionUID = -6121495568562340644L;
+        private final String word;
+        private final SortedMap<Integer, Node> next;
         private int sim;
 
-        private Entry(@NotNull String word, int sim) {
+        private Node(@NotNull String word) {
             this.word = word;
-            this.sim = sim;
+            this.next = new TreeMap<>();
         }
 
         @NotNull
@@ -89,19 +78,19 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
             if (o == null) return false;
             if (o == this) return true;
             if (o.getClass() != this.getClass()) return false;
-            Entry that = (Entry) o;
+            Node that = (Node) o;
             return that.word.equals(this.word);
         }
 
         @Override
         public String toString() {
-            return String.format("BKTreeSet.Entry: %s (%d)", word, sim);
+            return String.format("BKTreeSet.Node: %s (%d)", word, sim);
         }
     }
 
     private static final class BKTreeIterator implements Iterator<String>, Serializable {
         private final static long serialVersionUID = -2314985177087688435L;
-        private Queue<Node> queue;
+        private final Queue<Node> queue;
 
         private BKTreeIterator(@Nullable Node node) {
             this.queue = new ArrayDeque<>();
@@ -123,10 +112,10 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
 
     @NotNull
     @Override
-    public Iterable<SimilaritySet.Entry<String>> getSimilarTo(@NotNull String s) {
+    public Iterable<Entry<String>> getSimilarTo(@NotNull String s) {
         Objects.requireNonNull(s);
         Queue<Node> queue = new ArrayDeque<>();
-        Queue<SimilaritySet.Entry<String>> result = new ArrayDeque<>();
+        Queue<Entry<String>> result = new ArrayDeque<>();
 
         queue.add(root);
         while (!queue.isEmpty()) {
@@ -135,7 +124,7 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
 
             int dist = metric.compute(node.word, s);
             if (node.word.charAt(0) == s.charAt(0) && dist <= threshold)
-                result.add(new Entry(node.word, dist));
+            { node.sim = dist; result.add(node); }
             int low = Math.max(1, dist - threshold), high = dist + threshold + 1;
             queue.addAll(node.next.subMap(low, high).values());
         }

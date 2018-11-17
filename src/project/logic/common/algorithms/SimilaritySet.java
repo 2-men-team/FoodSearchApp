@@ -1,7 +1,6 @@
 package project.logic.common.algorithms;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.Objects;
@@ -12,15 +11,19 @@ import java.util.stream.StreamSupport;
 
 public interface SimilaritySet<E> extends Set<E> {
     @NotNull Iterable<Entry<E>> getSimilarTo(@NotNull E elem);
-    @NotNull default Spliterator<Entry<E>> spliterator(@NotNull E elem) {
+
+    @NotNull
+    default Spliterator<Entry<E>> spliterator(@NotNull E elem) {
         return getSimilarTo(elem).spliterator();
     }
 
-    @NotNull default Stream<Entry<E>> stream(@NotNull E elem) {
+    @NotNull
+    default Stream<Entry<E>> stream(@NotNull E elem) {
         return StreamSupport.stream(spliterator(elem), false);
     }
 
-    @NotNull default Stream<Entry<E>> parallelStream(@NotNull E elem) {
+    @NotNull
+    default Stream<Entry<E>> parallelStream(@NotNull E elem) {
         return StreamSupport.stream(spliterator(elem), true);
     }
 

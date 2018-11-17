@@ -1,6 +1,5 @@
 package project;
 
-import project.logic.Config;
 import project.logic.handlers.QueryHandler;
 
 import java.util.Scanner;
