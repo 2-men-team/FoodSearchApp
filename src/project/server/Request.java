@@ -5,29 +5,31 @@ import org.jetbrains.annotations.Nullable;
 import project.logic.representation.Location;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 public final class Request implements Serializable {
-    private final static long serialVersionUID = -4829133815639764152L;
+    private final static long serialVersionUID = -7673100093728357558L;
 
     private final String name;
     private final String query;
     private final Location location;
 
-    public Request(@Nullable String name, @NotNull String query, Location location) {
+    public Request(@Nullable String name, @NotNull String query, @NotNull Location location) {
         this.name     = "" + name;
-        this.query    = Objects.requireNonNull(query);
-        this.location = Objects.requireNonNull(location);
+        this.query    = query;
+        this.location = location;
     }
 
+    @NotNull
     public String getName() {
         return name;
     }
 
+    @NotNull
     public String getQuery() {
         return query;
     }
 
+    @NotNull
     public Location getLocation() {
         return location;
     }

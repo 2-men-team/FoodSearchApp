@@ -6,7 +6,6 @@ import project.logic.common.utils.Denoiser;
 import project.logic.representation.Dish;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -18,7 +17,7 @@ public final class AnalyticalHandler implements QueryHandler {
         private final Dish   dish;
         private final double rank;
 
-        private AnalyticalResult(Dish dish, double rank) {
+        private AnalyticalResult(@NotNull Dish dish, double rank) {
             this.dish = dish;
             this.rank = rank;
         }
@@ -57,7 +56,7 @@ public final class AnalyticalHandler implements QueryHandler {
     public @NotNull Iterable<Result> handle(@NotNull String query) {
         Map<String, Set<Dish>> data = DataBase.getInstance().getData();
 
-        return denoiser.clear(Objects.requireNonNull(query))
+        return denoiser.clear(query)
                 .stream()
                 .flatMap(DataBase.getInstance().getSimilarities()::stream)
                 .flatMap(entry -> data.get(entry.getElement()).stream())

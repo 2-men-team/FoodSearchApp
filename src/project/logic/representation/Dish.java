@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public final class Dish implements Serializable {
-    private static final long serialVersionUID = -6210298888765511788L;
+    private static final long serialVersionUID = -3079456736833325296L;
 
     private final String description;
     private final Restaurant restaurant;
@@ -15,9 +15,9 @@ public final class Dish implements Serializable {
     private transient boolean cached = false;
 
     public Dish(@NotNull String description, @NotNull Restaurant restaurant, double price) {
-        this.description = description;
-        this.restaurant = restaurant;
-        this.price = price;
+        this.description = Objects.requireNonNull(description);
+        this.restaurant  = Objects.requireNonNull(restaurant);
+        this.price       = price;
     }
 
     @NotNull
@@ -47,8 +47,8 @@ public final class Dish implements Serializable {
         if (o.getClass() != this.getClass()) return false;
         Dish that = (Dish) o;
         return that.description.equals(this.description) &&
-               that.price == this.price &&
-               that.restaurant == this.restaurant;
+               Double.compare(that.price, this.price) == 0 &&
+               that.restaurant.equals(this.restaurant);
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public final class Location implements Serializable {
     public static final Location NONE = new Location(Double.NaN, Double.NaN, null);
-    private static final long serialVersionUID = 8308804607780017412L;
+    private static final long serialVersionUID = -1690816249747439655L;
 
     private final double lat;
     private final double lon;
@@ -41,7 +41,6 @@ public final class Location implements Serializable {
     }
 
     public double distanceTo(@NotNull Location that) {
-        Objects.requireNonNull(that);
         return Math.pow(this.lat - that.lat, 2) + Math.pow(this.lon - that.lon, 2);
     }
 

@@ -1,7 +1,6 @@
 package project;
 
 import org.jetbrains.annotations.NotNull;
-import project.Config;
 import project.logic.common.algorithms.BKTreeSet;
 import project.logic.common.algorithms.SimilaritySet;
 import project.logic.common.utils.Denoiser;
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class DataBase implements Serializable {
-    private static final long serialVersionUID = -5772081824646818838L;
+    private static final long serialVersionUID = 1725006581004398353L;
 
     private final Set<String> stopWords;
     private final Map<String, Set<Dish>> index;
@@ -49,7 +48,7 @@ public final class DataBase implements Serializable {
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-                System.exit(1);
+                throw new RuntimeException(e);
             }
 
             ourInstance = Objects.requireNonNull(temp); // should not be null
@@ -104,7 +103,7 @@ public final class DataBase implements Serializable {
                     double price;
                     try {
                         price = Double.parseDouble(line[5]);
-                    } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
+                    } catch (NumberFormatException e) {
                         price = Double.NaN;
                     }
 

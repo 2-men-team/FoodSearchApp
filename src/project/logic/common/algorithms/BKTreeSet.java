@@ -15,7 +15,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public final class BKTreeSet extends AbstractSet<String> implements SimilaritySet<String>, Serializable {
-    private static final long serialVersionUID = -2908922341930943423L;
+    private static final long serialVersionUID = 212307152841122809L;
     public static final int DEFAULT_THRESHOLD = 2;
 
     private Node root;
@@ -30,7 +30,7 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
     public BKTreeSet(@NotNull WordMetric metric, int threshold) {
         super();
         this.threshold = validateThreshold(threshold);
-        this.metric = Objects.requireNonNull(metric);
+        this.metric = metric;
     }
 
     private static int validateThreshold(int val) {
@@ -47,12 +47,12 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
     }
 
     private static final class Node implements Entry<String>, Serializable {
-        private final static long serialVersionUID = -6121495568562340644L;
+        private final static long serialVersionUID = -8541287700963696248L;
         private final String word;
         private final SortedMap<Integer, Node> next;
         private int sim;
 
-        private Node(@NotNull String word) {
+        private Node(String word) {
             this.word = word;
             this.next = new TreeMap<>();
         }
@@ -113,7 +113,6 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
     @NotNull
     @Override
     public Iterable<Entry<String>> getSimilarTo(@NotNull String s) {
-        Objects.requireNonNull(s);
         Queue<Node> queue = new ArrayDeque<>();
         Queue<Entry<String>> result = new ArrayDeque<>();
 
@@ -143,8 +142,8 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
     }
 
     @Override
-    public boolean contains(Object o) {
-        String s = (String) Objects.requireNonNull(o);
+    public boolean contains(@NotNull Object o) {
+        String s = (String) o;
         Node node = root;
 
         while (node != null) {
@@ -162,9 +161,7 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
     }
 
     @Override
-    public boolean add(String s) {
-        Objects.requireNonNull(s);
-
+    public boolean add(@NotNull String s) {
         if (root == null) root = new Node(s);
         else {
             Node node = root;

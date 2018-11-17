@@ -8,7 +8,6 @@ import project.logic.representation.Dish;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -17,8 +16,8 @@ public final class Worker implements Runnable {
     private final QueryHandler handler;
 
     public Worker(@NotNull Socket socket, @NotNull QueryHandler handler) {
-        this.socket  = Objects.requireNonNull(socket);
-        this.handler = Objects.requireNonNull(handler);
+        this.socket  = socket;
+        this.handler = handler;
     }
 
     @Override

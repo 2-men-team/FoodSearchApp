@@ -6,35 +6,26 @@ import project.logic.handlers.QueryHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public final class Server extends Thread {
+    private static final int POOL_SIZE = 15;
+
     private final QueryHandler handler;
-    private final ExecutorService pool = Executors.newFixedThreadPool(15);
+    private final ExecutorService pool;
 
     public Server(@NotNull QueryHandler handler) {
         super();
-        this.handler = Objects.requireNonNull(handler);
+        this.handler = handler;
+        this.pool = Executors.newFixedThreadPool(POOL_SIZE);
     }
 
     @Override
     public void run() {
         try (ServerSocket server = new ServerSocket(Config.PORT)) {
-            while (true) {
-                Socket socket;
-
-                try {
-                    socket = server.accept();
-                } catch (IOException e) {
-                    System.out.println(e.getMessage());
-                    throw new RuntimeException(e);
-                }
-
-                pool.execute(new Worker(socket, handler));
-            }
+            // noinspection InfiniteLoopStatement
+            while (true) pool.execute(new Worker(server.accept(), handler));
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

@@ -5,23 +5,24 @@ import org.jetbrains.annotations.Nullable;
 import project.logic.representation.Dish;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 public final class Response implements Serializable {
-    private final static long serialVersionUID = 686549231346866210L;
+    private final static long serialVersionUID = -7764099569087263618L;
 
     private final String name;
     private final Iterable<Dish> dishes;
 
-    Response(@Nullable String name, @NotNull Iterable<Dish> dishes) {
+    public Response(@Nullable String name, @NotNull Iterable<Dish> dishes) {
         this.name = "" + name;
-        this.dishes = Objects.requireNonNull(dishes);
+        this.dishes = dishes;
     }
 
+    @NotNull
     public Iterable<Dish> getDishes() {
         return dishes;
     }
 
+    @NotNull
     public String getName() {
         return name;
     }

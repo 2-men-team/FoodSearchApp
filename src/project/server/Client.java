@@ -8,7 +8,6 @@ import project.logic.representation.Location;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Objects;
 import java.util.Scanner;
 
 public final class Client extends Thread {
@@ -18,7 +17,7 @@ public final class Client extends Thread {
     public Client(@Nullable String name, @NotNull Location location) {
         super();
         this.name = "" + name;
-        this.location = Objects.requireNonNull(location);
+        this.location = location;
     }
 
     @Override
@@ -38,6 +37,7 @@ public final class Client extends Thread {
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
