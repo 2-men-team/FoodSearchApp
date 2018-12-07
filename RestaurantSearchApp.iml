@@ -17,5 +17,15 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lucene-snowball-3.0.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <LIBRARY_FILE />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

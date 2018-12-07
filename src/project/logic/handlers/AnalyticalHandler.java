@@ -2,7 +2,7 @@ package project.logic.handlers;
 
 import org.jetbrains.annotations.NotNull;
 import project.DataBase;
-import project.logic.common.utils.Denoiser;
+import project.logic.common.utils.parsers.QueryParser;
 import project.logic.representation.Dish;
 
 import java.util.Map;
@@ -11,7 +11,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class AnalyticalHandler implements QueryHandler {
-    private final Denoiser denoiser = new Denoiser(DataBase.getInstance().getStopWords());
+    private final QueryParser parser;
+
+    public AnalyticalHandler(@NotNull QueryParser parser) {
+        this.parser = parser;
+    }
 
     private static final class AnalyticalResult implements Result {
         private final Dish   dish;
@@ -56,10 +60,8 @@ public final class AnalyticalHandler implements QueryHandler {
     public @NotNull Iterable<Result> handle(@NotNull String query) {
         Map<String, Set<Dish>> data = DataBase.getInstance().getData();
 
-        return denoiser.clear(query)
-                .stream()
-                .flatMap(DataBase.getInstance().getSimilarities()::stream)
-                .flatMap(entry -> data.get(entry.getElement()).stream())
+        return parser.parse(query.trim().toLowerCase())
+                .flatMap(entry -> data.get(entry).stream())
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet()
                 .stream()

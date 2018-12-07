@@ -15,8 +15,8 @@ public final class Dish implements Serializable {
     private transient boolean cached = false;
 
     public Dish(@NotNull String description, @NotNull Restaurant restaurant, double price) {
-        this.description = Objects.requireNonNull(description);
-        this.restaurant  = Objects.requireNonNull(restaurant);
+        this.description = description;
+        this.restaurant  = restaurant;
         this.price       = price;
     }
 
@@ -53,6 +53,6 @@ public final class Dish implements Serializable {
 
     @Override
     public String toString() {
-        return description;
+        return String.format("Dish: %s (price: %.3f)", description, price);
     }
 }

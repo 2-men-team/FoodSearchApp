@@ -5,29 +5,22 @@ import org.jetbrains.annotations.Nullable;
 import project.logic.common.utils.metrics.WordMetric;
 
 import java.io.Serializable;
-import java.util.AbstractSet;
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 public final class BKTreeSet extends AbstractSet<String> implements SimilaritySet<String>, Serializable {
-    private static final long serialVersionUID = 212307152841122809L;
+    private static final long serialVersionUID = 848895510913565910L;
     public static final int DEFAULT_THRESHOLD = 2;
 
     private Node root;
     private int size = 0;
     private int threshold;
-    private final WordMetric metric;
+    private final WordMetric<Integer> metric;
 
-    public BKTreeSet(@NotNull WordMetric metric) {
+    public BKTreeSet(@NotNull WordMetric<Integer> metric) {
         this(metric, DEFAULT_THRESHOLD);
     }
 
-    public BKTreeSet(@NotNull WordMetric metric, int threshold) {
+    public BKTreeSet(@NotNull WordMetric<Integer> metric, int threshold) {
         super();
         this.threshold = validateThreshold(threshold);
         this.metric = metric;
@@ -64,7 +57,7 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
         }
 
         @Override
-        public int getSimilarity() {
+        public double getSimilarity() {
             return sim;
         }
 
@@ -104,6 +97,10 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
 
         @Override
         public String next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("Iterator has no elements to iterate.");
+            }
+
             Node node = Objects.requireNonNull(queue.poll());
             queue.addAll(node.next.values());
             return node.word;
@@ -112,9 +109,9 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
 
     @NotNull
     @Override
-    public Iterable<Entry<String>> getSimilarTo(@NotNull String s) {
+    public Set<Entry<String>> getSimilarTo(@NotNull String s) {
         Queue<Node> queue = new ArrayDeque<>();
-        Queue<Entry<String>> result = new ArrayDeque<>();
+        Set<Entry<String>> result = new HashSet<>();
 
         queue.add(root);
         while (!queue.isEmpty()) {

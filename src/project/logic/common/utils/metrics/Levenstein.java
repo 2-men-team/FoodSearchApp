@@ -2,11 +2,11 @@ package project.logic.common.utils.metrics;
 
 import org.jetbrains.annotations.NotNull;
 
-public final class Levenstein implements WordMetric {
-    private final static long serialVersionUID = -928827437231971185L;
+public final class Levenstein implements WordMetric<Integer> {
+    private static final long serialVersionUID = -928827437231971185L;
 
     @Override
-    public int compute(@NotNull String a, @NotNull String b) {
+    public Integer compute(@NotNull String a, @NotNull String b) {
         int n = a.length(), m = b.length();
 
         if (n == 0) return m;

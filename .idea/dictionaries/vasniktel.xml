@@ -3,7 +3,9 @@
     <words>
       <w>denoiser</w>
       <w>levenstein</w>
+      <w>preprocess</w>
       <w>spliterator</w>
+      <w>stemmer</w>
     </words>
   </dictionary>
 </component>

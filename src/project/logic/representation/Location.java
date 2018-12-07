@@ -8,8 +8,9 @@ import java.util.Comparator;
 import java.util.Objects;
 
 public final class Location implements Serializable {
+    private static final long serialVersionUID = 8750380325627601501L;
+
     public static final Location NONE = new Location(Double.NaN, Double.NaN, null);
-    private static final long serialVersionUID = -1690816249747439655L;
 
     private final double lat;
     private final double lon;
@@ -21,6 +22,16 @@ public final class Location implements Serializable {
         this.lat = lat;
         this.lon = lon;
         this.description = "" + description;
+    }
+
+    public static Location valueOf(@NotNull String lat, @NotNull String lon, @Nullable String description) {
+        try {
+            double latitude = Double.parseDouble(lat);
+            double longitude = Double.parseDouble(lon);
+            return new Location(latitude, longitude, description);
+        } catch (NumberFormatException e) {
+            return Location.NONE;
+        }
     }
 
     public double getLatitude() {
@@ -41,7 +52,7 @@ public final class Location implements Serializable {
     }
 
     public double distanceTo(@NotNull Location that) {
-        return Math.pow(this.lat - that.lat, 2) + Math.pow(this.lon - that.lon, 2);
+        return Math.sqrt(Math.pow(this.lat - that.lat, 2) + Math.pow(this.lon - that.lon, 2));
     }
 
     @Override
