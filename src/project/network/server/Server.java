@@ -46,7 +46,9 @@ public final class Server extends Thread {
     public void run() {
         try (ServerSocket server = new ServerSocket(Config.PORT)) {
             // noinspection InfiniteLoopStatement
-            while (true) pool.execute(new Worker(server.accept(), handler));
+            while (true) {
+                pool.execute(new Worker(server.accept(), handler));
+            }
         } catch (IOException e) {
             throw new RuntimeException("Error while starting a server", e);
         }

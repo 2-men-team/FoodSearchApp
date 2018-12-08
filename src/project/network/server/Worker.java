@@ -6,9 +6,7 @@ import project.logic.common.utils.Serializer;
 import project.logic.handlers.QueryHandler;
 import project.logic.representation.Dish;
 import project.network.request.Request;
-import project.network.response.Failure;
 import project.network.response.Response;
-import project.network.response.Success;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -16,11 +14,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public final class Worker implements Runnable {
+final class Worker implements Runnable {
     private final Socket socket;
     private final QueryHandler handler;
 
-    public Worker(@NotNull Socket socket, @NotNull QueryHandler handler) {
+    Worker(@NotNull Socket socket, @NotNull QueryHandler handler) {
         this.socket  = socket;
         this.handler = handler;
     }
@@ -28,24 +26,24 @@ public final class Worker implements Runnable {
     @Override
     public void run() {
         try (Socket s = socket) {
-            Request request = (Request) Serializer.deserialize(s.getInputStream());
+            Request request = Serializer.deserializeJson(s.getInputStream(), Request.class);
             System.out.println(request);
 
             Response response;
             try {
                 List<Dish> dishes = StreamSupport.stream(handler.handle(request.getQuery()).spliterator(), false)
                         .sorted(QueryHandler.Result.comparingByRank().reversed())
-                        .limit(20)
+                        .limit(1)
                         .map(QueryHandler.Result::getDish)
                         .collect(Collectors.toList());
-                response = new Success(request.getMessage(), dishes);
+                response = Response.success(request.getMessage(), dishes);
             } catch (ProjectRuntimeException e) {
                 String template = "Failed while processing data for %s: %s";
-                response = new Failure(String.format(template, request.getQuery(), e.getMessage()));
+                response = Response.failure(String.format(template, request.getQuery(), e.getMessage()));
             }
 
-            Serializer.serialize(s.getOutputStream(), response);
-        } catch (IOException | ClassNotFoundException e) {
+            Serializer.serializeJson(s.getOutputStream(), response);
+        } catch (IOException e) {
             throw new RuntimeException("Error while processing request", e);
         }
     }

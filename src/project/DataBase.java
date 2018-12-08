@@ -41,10 +41,10 @@ public final class DataBase implements Serializable {
         static {
             try {
                 if (Files.exists(Paths.get(Config.DB_PATH))) {
-                    ourInstance = (DataBase) Serializer.deserialize(Config.DB_PATH);
+                    ourInstance = (DataBase) Serializer.deserializeNative(Config.DB_PATH);
                 } else {
                     ourInstance = new DataBase(Config.STOP_WORDS_PATH, Config.DATA_SET_PATH, "\\|");
-                    Serializer.serialize(Config.DB_PATH, ourInstance);
+                    Serializer.serializeNative(Config.DB_PATH, ourInstance);
                 }
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException("Error while loading database", e);

@@ -13,12 +13,12 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public final class Client extends Thread {
-    private final Location location;
     private final String name;
+    private final Location location;
 
     public Client(@Nullable String name, @NotNull Location location) {
         super();
-        this.name = "" + name;
+        this.name = name;
         this.location = location;
     }
 
@@ -27,22 +27,23 @@ public final class Client extends Thread {
         Scanner scanner = new Scanner(System.in, "utf-8");
         System.out.println("Start inputting queries (press Ctrl-D to break):");
         System.out.print("> ");
+
         while (scanner.hasNextLine()) {
             String query = scanner.nextLine().trim().toLowerCase();
             if (query.equals("exit")) break;
 
             try (Socket socket = new Socket(Config.HOST, Config.PORT)) {
-                Serializer.serialize(socket.getOutputStream(), new Request(name, query, location));
-                Response response = (Response) Serializer.deserialize(socket.getInputStream());
+                Serializer.serializeJson(socket.getOutputStream(), new Request(name, query, location));
+                Response response = Serializer.deserializeJson(socket.getInputStream(), Response.class);
 
-                if (response.getStatus() == Response.Status.BAD) {
+                if (response.getStatus() == Response.Status.FAILURE) {
                     System.out.println(response.getMessage());
                 } else {
                     response.getData().forEach(System.out::println);
                 }
 
                 System.out.print("> ");
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
                 throw new RuntimeException("Error while sending a request", e);
             }
         }

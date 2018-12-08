@@ -10,7 +10,7 @@ import java.util.Objects;
 public final class Location implements Serializable {
     private static final long serialVersionUID = 8750380325627601501L;
 
-    public static final Location NONE = new Location(Double.NaN, Double.NaN, null);
+    public static final Location NONE = new Location(Double.NaN, Double.NaN);
 
     private final double lat;
     private final double lon;
@@ -21,7 +21,11 @@ public final class Location implements Serializable {
     public Location(double lat, double lon, @Nullable String description) {
         this.lat = lat;
         this.lon = lon;
-        this.description = "" + description;
+        this.description = description;
+    }
+
+    public Location(double lat, double lon) {
+        this(lat, lon, null);
     }
 
     public static Location valueOf(@NotNull String lat, @NotNull String lon, @Nullable String description) {
@@ -42,7 +46,7 @@ public final class Location implements Serializable {
         return lon;
     }
 
-    @NotNull
+    @Nullable
     public String getDescription() {
         return description;
     }
@@ -57,7 +61,11 @@ public final class Location implements Serializable {
 
     @Override
     public int hashCode() {
-        if (!cached) { hash = Objects.hash(lat, lon); cached = true; }
+        if (!cached) {
+            hash = Objects.hash(lat, lon);
+            cached = true;
+        }
+
         return hash;
     }
 

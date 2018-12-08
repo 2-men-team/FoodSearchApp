@@ -17,7 +17,7 @@ public final class Restaurant implements Serializable {
 
     public Restaurant(@NotNull String name, @Nullable String description, @NotNull Location location) {
         this.name = name;
-        this.description = "" + description;
+        this.description = description;
         this.location = location;
     }
 
@@ -26,7 +26,7 @@ public final class Restaurant implements Serializable {
         return name;
     }
 
-    @NotNull
+    @Nullable
     public String getDescription() {
         return description;
     }
