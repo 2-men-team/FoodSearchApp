@@ -30,7 +30,6 @@ public final class Client extends Thread {
 
         while (scanner.hasNextLine()) {
             String query = scanner.nextLine().trim().toLowerCase();
-            if (query.equals("exit")) break;
 
             try (Socket socket = new Socket(Config.HOST, Config.PORT)) {
                 Serializer.serializeJson(socket.getOutputStream(), new Request(name, query, location));
