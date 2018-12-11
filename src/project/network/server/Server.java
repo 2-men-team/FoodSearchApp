@@ -4,16 +4,19 @@ import org.jetbrains.annotations.NotNull;
 import project.Config;
 import project.DataBase;
 import project.logic.common.algorithms.SimilaritySet;
-import project.logic.common.utils.parsers.CommonQueryParser;
-import project.logic.common.utils.parsers.QueryParser;
-import project.logic.common.utils.preprocessors.denoiser.QueryDenoiser;
-import project.logic.common.utils.preprocessors.mappers.SpellCorrector;
-import project.logic.common.utils.preprocessors.mappers.Stemmer;
-import project.logic.handlers.AnalyticalHandler;
-import project.logic.handlers.QueryHandler;
+import project.logic.representation.Dish;
+import project.logic.strategies.handling.HandlingStrategy.Result;
+import project.logic.strategies.preprocessing.Preprocessor;
+import project.logic.strategies.preprocessing.QueryPreprocessor;
+import project.logic.strategies.preprocessing.routines.QueryDenoiser;
+import project.logic.strategies.preprocessing.routines.SpellCorrector;
+import project.logic.strategies.preprocessing.routines.Stemmer;
+import project.logic.strategies.handling.AnalyticalHandler;
+import project.logic.strategies.handling.HandlingStrategy;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,14 +24,14 @@ import java.util.concurrent.Executors;
 public final class Server extends Thread {
     public static final int DEFAULT_POOL_SIZE = 15;
 
-    private final QueryHandler handler;
+    private final HandlingStrategy<List<Result<Dish>>> handler;
     private final ExecutorService pool;
 
-    public Server(@NotNull QueryHandler handler) {
+    public Server(@NotNull HandlingStrategy<List<Result<Dish>>> handler) {
         this(handler, DEFAULT_POOL_SIZE);
     }
 
-    public Server(@NotNull QueryHandler handler, int poolSize) {
+    public Server(@NotNull HandlingStrategy<List<Result<Dish>>> handler, int poolSize) {
         super();
         this.handler = handler;
         this.pool = Executors.newFixedThreadPool(validatePoolSize(poolSize));
@@ -50,22 +53,21 @@ public final class Server extends Thread {
                 pool.execute(new Worker(server.accept(), handler));
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error while starting a server", e);
+            throw new RuntimeException("Error while running a server", e);
         }
     }
 
-    public static void main(String... args) {
+    public static void main(String[] args) {
         Set<String> correctWords = DataBase.getInstance().getData().keySet();
         QueryDenoiser denoiser = new QueryDenoiser(DataBase.getInstance().getStopWords());
         SimilaritySet<String> similarities = DataBase.getInstance().getSimilarities();
 
-        QueryParser parser = new CommonQueryParser.Builder()
+        Preprocessor.Builder builder = new QueryPreprocessor.Builder()
                 .setDenoiser(denoiser)
                 .setSpellCorrector(new SpellCorrector(correctWords, denoiser, similarities))
-                .setStemmer(new Stemmer())
-                .build();
+                .setStemmer(Stemmer.ENGLISH);
 
         System.out.println("Database loaded...");
-        new Server(new AnalyticalHandler(parser)).start();
+        new Server(new AnalyticalHandler(builder, DataBase.getInstance().getData())).start();
     }
 }

@@ -28,6 +28,10 @@ public final class Location implements Serializable {
         this(lat, lon, null);
     }
 
+    public Location(String description) {
+        this(Double.NaN, Double.NaN, description);
+    }
+
     public static Location valueOf(@NotNull String lat, @NotNull String lon, @Nullable String description) {
         try {
             double latitude = Double.parseDouble(lat);
@@ -36,6 +40,10 @@ public final class Location implements Serializable {
         } catch (NumberFormatException e) {
             return Location.NONE;
         }
+    }
+
+    public static Location valueOf(@NotNull String lat, @NotNull String lon) {
+        return valueOf(lat, lon, null);
     }
 
     public double getLatitude() {
@@ -51,12 +59,12 @@ public final class Location implements Serializable {
         return description;
     }
 
-    public Comparator<Location> getComparator() {
-        return Comparator.comparingDouble(this::distanceTo);
-    }
-
     public double distanceTo(@NotNull Location that) {
         return Math.sqrt(Math.pow(this.lat - that.lat, 2) + Math.pow(this.lon - that.lon, 2));
+    }
+
+    public Comparator<Location> getComparator() {
+        return Comparator.comparingDouble(this::distanceTo);
     }
 
     @Override

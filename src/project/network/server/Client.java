@@ -5,8 +5,8 @@ import org.jetbrains.annotations.Nullable;
 import project.Config;
 import project.logic.common.utils.Serializer;
 import project.logic.representation.Location;
-import project.network.request.Request;
-import project.network.response.Response;
+import project.network.data.Request;
+import project.network.data.Response;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -38,17 +38,20 @@ public final class Client extends Thread {
                 if (response.getStatus() == Response.Status.FAILURE) {
                     System.out.println(response.getMessage());
                 } else {
-                    response.getData().forEach(System.out::println);
+                    System.out.println("By location:");
+                    response.getDataByLocation().forEach(System.out::println);
+                    System.out.println("By rank:");
+                    response.getDataByRank().forEach(System.out::println);
                 }
 
                 System.out.print("> ");
             } catch (IOException e) {
-                throw new RuntimeException("Error while sending a request", e);
+                throw new RuntimeException("Error while sending a data", e);
             }
         }
     }
 
-    public static void main(String... args) {
-        new Client(null, Location.NONE).start();
+    public static void main(String[] args) {
+        new Client(null, new Location(43.45663, 42.253534)).start();
     }
 }

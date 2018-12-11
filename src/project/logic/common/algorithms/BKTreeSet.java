@@ -2,7 +2,7 @@ package project.logic.common.algorithms;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import project.logic.common.utils.metrics.WordMetric;
+import project.logic.common.utils.metrics.Metric;
 
 import java.io.Serializable;
 import java.util.*;
@@ -14,13 +14,13 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
     private Node root;
     private int size = 0;
     private int threshold;
-    private final WordMetric<Integer> metric;
+    private final Metric<String, Integer> metric;
 
-    public BKTreeSet(@NotNull WordMetric<Integer> metric) {
+    public BKTreeSet(@NotNull Metric<String, Integer> metric) {
         this(metric, DEFAULT_THRESHOLD);
     }
 
-    public BKTreeSet(@NotNull WordMetric<Integer> metric, int threshold) {
+    public BKTreeSet(@NotNull Metric<String, Integer> metric, int threshold) {
         super();
         this.threshold = validateThreshold(threshold);
         this.metric = metric;

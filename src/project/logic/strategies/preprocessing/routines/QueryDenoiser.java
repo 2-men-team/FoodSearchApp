@@ -1,4 +1,4 @@
-package project.logic.common.utils.preprocessors.denoiser;
+package project.logic.strategies.preprocessing.routines;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +27,7 @@ public final class QueryDenoiser implements Denoiser {
 
     @Override
     @NotNull
-    public Iterable<String> clear(@NotNull List<String> query) {
+    public List<String> apply(@NotNull List<String> query) {
         return asStream(query).collect(Collectors.toList());
     }
 }

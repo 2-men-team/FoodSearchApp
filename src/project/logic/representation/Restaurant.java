@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Objects;
 
 public final class Restaurant implements Serializable {
@@ -34,6 +35,10 @@ public final class Restaurant implements Serializable {
     @NotNull
     public Location getLocation() {
         return location;
+    }
+
+    public static Comparator<Restaurant> comparingByLocation(@NotNull Location location) {
+        return Comparator.comparing(Restaurant::getLocation, location.getComparator());
     }
 
     @Override

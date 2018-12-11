@@ -1,15 +1,15 @@
-package project.logic.common.utils.preprocessors.mappers;
+package project.logic.strategies.preprocessing.routines;
 
 import org.jetbrains.annotations.NotNull;
 import project.logic.common.algorithms.SimilaritySet;
 import project.logic.common.exceptions.InvalidQueryException;
-import project.logic.common.utils.preprocessors.denoiser.Denoiser;
 
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
-public final class SpellCorrector implements Mapper {
+public final class SpellCorrector implements Function<String, String> {
     private final Set<String> correctWords;
     private final Denoiser denoiser;
     private final SimilaritySet<String> similarities;
@@ -25,8 +25,8 @@ public final class SpellCorrector implements Mapper {
     }
 
     @Override
-    public @NotNull String mapWord(@NotNull String word) {
-        if (!correctWords.contains(word) || !denoiser.isNoise(word)) {
+    public @NotNull String apply(@NotNull String word) {
+        if (!correctWords.contains(word) && !denoiser.isNoise(word)) {
             Comparator<SimilaritySet.Entry<String>> comparator = SimilaritySet.Entry.comparingBySimilarity();
             Optional<SimilaritySet.Entry<String>> optional = similarities.stream(word).min(comparator);
 

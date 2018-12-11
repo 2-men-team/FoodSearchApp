@@ -2,7 +2,7 @@ package project.logic.common.utils.metrics;
 
 import org.jetbrains.annotations.NotNull;
 
-public final class Levenstein implements WordMetric<Integer> {
+public final class Levenstein implements Metric<String, Integer> {
     private static final long serialVersionUID = -928827437231971185L;
 
     @Override

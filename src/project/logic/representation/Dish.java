@@ -3,6 +3,7 @@ package project.logic.representation;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Objects;
 
 public final class Dish implements Serializable {
@@ -34,9 +35,17 @@ public final class Dish implements Serializable {
         return price;
     }
 
+    public static Comparator<Dish> comparingByPrice() {
+        return Comparator.comparingDouble(Dish::getPrice);
+    }
+
     @Override
     public int hashCode() {
-        if (!cached) { hash = Objects.hash(description, restaurant, price); cached = true; }
+        if (!cached) {
+            hash = Objects.hash(description, restaurant, price);
+            cached = true;
+        }
+
         return hash;
     }
 

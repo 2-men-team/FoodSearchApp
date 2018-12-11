@@ -4,7 +4,11 @@ import com.owlike.genson.Genson;
 import com.owlike.genson.GensonBuilder;
 import com.owlike.genson.reflect.VisibilityFilter;
 import org.jetbrains.annotations.NotNull;
+import project.logic.common.exceptions.InvalidQueryException;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -45,19 +49,37 @@ public final class Serializer {
         return new ObjectInputStream(stream).readObject();
     }
 
-    public static String serializeJson(Object object) {
-        return genson.serialize(object);
-    }
-
     public static void serializeJson(@NotNull OutputStream stream, Object object) {
-        genson.serialize(object, stream);
+        DataOutputStream out = new DataOutputStream(stream);
+        byte[] json = genson.serializeBytes(object);
+
+        try {
+            out.writeInt(json.length);
+            out.write(json);
+            out.flush();
+        } catch (IOException e) {
+            throw new RuntimeException("Error while serializing to stream", e);
+        }
     }
 
     public static <T> T deserializeJson(@NotNull InputStream stream, @NotNull Class<T> clazz) {
-        return genson.deserialize(stream, clazz);
-    }
+        DataInputStream in = new DataInputStream(stream);
+        byte[] json;
 
-    public static <T> T deserializeJson(@NotNull String json, @NotNull Class<T> clazz) {
+        try {
+            int size = in.readInt();
+            if (size <= 0) {
+                throw new InvalidQueryException("Size of the message sent is <= 0.");
+            }
+
+            json = new byte[size];
+            in.readFully(json);
+        } catch (EOFException e) {
+            throw new InvalidQueryException("Query format mismatch.", e);
+        } catch (IOException e) {
+            throw new RuntimeException("Error while deserializing from stream", e);
+        }
+
         return genson.deserialize(json, clazz);
     }
 }

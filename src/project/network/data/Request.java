@@ -1,4 +1,4 @@
-package project.network.request;
+package project.network.data;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

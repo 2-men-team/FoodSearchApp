@@ -2,8 +2,10 @@
   <dictionary name="vasniktel">
     <words>
       <w>denoiser</w>
+      <w>deserializing</w>
       <w>levenstein</w>
       <w>preprocess</w>
+      <w>preprocessing</w>
       <w>spliterator</w>
       <w>stemmer</w>
     </words>

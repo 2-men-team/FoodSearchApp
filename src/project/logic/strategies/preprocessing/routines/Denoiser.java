@@ -1,12 +1,13 @@
-package project.logic.common.utils.preprocessors.denoiser;
+package project.logic.strategies.preprocessing.routines;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
-public interface Denoiser {
+public interface Denoiser extends Function<List<String>, List<String>> {
     Denoiser DUMMY = new Denoiser() {
         @Override
         public boolean isNoise(@NotNull String word) {
@@ -21,20 +22,14 @@ public interface Denoiser {
 
         @NotNull
         @Override
-        public Iterable<String> clear(@NotNull List<String> query) {
+        public List<String> apply(@NotNull List<String> query) {
             return query;
         }
     };
 
     boolean isNoise(@NotNull String word);
+
     @NotNull Stream<String> asStream(@NotNull List<String> query);
-    @NotNull Iterable<String> clear(@NotNull List<String> query);
 
-    default Stream<String> asStream(@NotNull String[] query) {
-        return asStream(Arrays.asList(query));
-    }
-
-    default Iterable<String> clear(@NotNull String[] query) {
-        return clear(Arrays.asList(query));
-    }
+    @NotNull List<String> apply(@NotNull List<String> query);
 }
