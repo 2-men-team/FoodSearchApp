@@ -8,40 +8,29 @@ import java.util.List;
 
 public final class Response {
     private final String message;
-    private final List<Dish> dataByLocation;
-    private final List<Dish> dataByRank;
+    private final List<Dish> data;
     private final Status status;
 
-    // TODO: remove redundant 'data' fields
-    private Response(String message, List<Dish> dataByLocation, List<Dish> dataByRank, Status status) {
+    private Response(String message, List<Dish> data, Status status) {
         this.message = message;
-        this.dataByLocation = dataByLocation;
-        this.dataByRank = dataByRank;
+        this.data = data;
         this.status = status;
     }
 
-    public static Response success(@Nullable String message, @NotNull List<Dish> dataByLocation, @NotNull List<Dish> dataByRank) {
-        return new Response(message, dataByLocation, dataByRank, Status.SUCCESS);
+    public static Response success(@Nullable String message, @NotNull List<Dish> data) {
+        return new Response(message, data, Status.SUCCESS);
     }
 
     public static Response failure(@Nullable String message) {
-        return new Response(message, null, null, Status.FAILURE);
+        return new Response(message, null, Status.FAILURE);
     }
 
-    public @NotNull List<Dish> getDataByLocation() {
+    public @NotNull List<Dish> getData() {
         if (status == Status.FAILURE) {
             throw new UnsupportedOperationException("Failed response has no data.");
         }
 
-        return dataByLocation;
-    }
-
-    public @NotNull List<Dish> getDataByRank() {
-        if (status == Status.FAILURE) {
-            throw new UnsupportedOperationException("Failed response has no data.");
-        }
-
-        return dataByRank;
+        return data;
     }
 
     public @Nullable String getMessage() {

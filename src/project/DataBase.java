@@ -90,8 +90,8 @@ public final class DataBase implements Serializable {
                 String[] line = pattern.split(scanner.nextLine(), -1);
 
                 String name = line[3];
-                String description = line[5].isEmpty() ? null : line[5];
-                map.computeIfAbsent(name, key -> new Restaurant(key, line[4], new Location(description)));
+                Location location = line[5].isEmpty() ? Location.NONE : new Location(line[5]);
+                map.computeIfAbsent(name, key -> new Restaurant(key, line[4], location));
 
                 double price;
                 try {

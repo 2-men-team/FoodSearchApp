@@ -33,21 +33,13 @@ final class Worker implements Runnable {
 
             Response response;
             try {
-                List<Dish> dishes = handler.apply(request.getQuery())
-                        .stream()
+                List<Dish> data = handler.apply(request.getQuery()).stream()
                         .sorted(Result.<Dish>comparingByRank().reversed())
                         .limit(20)
                         .map(Result::getData)
                         .collect(Collectors.toList());
 
-                List<Dish> byRank = dishes.stream().limit(10).collect(Collectors.toList());
-                List<Dish> byLocation = dishes
-                        .stream()
-                        .skip(10)
-                        .sorted(Comparator.comparing(Dish::getRestaurant, Restaurant.comparingByLocation(request.getLocation())))
-                        .collect(Collectors.toList());
-
-                response = Response.success(request.getMessage(), byLocation, byRank);
+                response = Response.success(request.getMessage(), data);
             } catch (ProjectRuntimeException e) {
                 String template = "Failed while processing data for %s: %s";
                 response = Response.failure(String.format(template, request.getQuery(), e.getMessage()));

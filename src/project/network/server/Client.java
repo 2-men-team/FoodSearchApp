@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import project.Config;
 import project.logic.common.utils.Serializer;
+import project.logic.representation.Dish;
 import project.logic.representation.Location;
 import project.network.data.Request;
 import project.network.data.Response;
@@ -11,6 +12,7 @@ import project.network.data.Response;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public final class Client extends Thread {
     private final String name;
@@ -38,10 +40,13 @@ public final class Client extends Thread {
                 if (response.getStatus() == Response.Status.FAILURE) {
                     System.out.println(response.getMessage());
                 } else {
-                    System.out.println("By location:");
-                    response.getDataByLocation().forEach(System.out::println);
-                    System.out.println("By rank:");
-                    response.getDataByRank().forEach(System.out::println);
+                    response.getData().stream()
+                            .collect(Collectors.groupingBy(Dish::getRestaurant))
+                            .forEach((restaurant, dishes) -> {
+                                System.out.println(restaurant);
+                                dishes.forEach(System.out::println);
+                                System.out.println();
+                            });
                 }
 
                 System.out.print("> ");

@@ -25,6 +25,7 @@ public final class Serializer {
             .useMethods(false)
             .useConstructorWithArguments(true)
             .setThrowExceptionIfNoDebugInfo(true)
+            .setSkipNull(true)
             .create();
 
     private Serializer() { }
