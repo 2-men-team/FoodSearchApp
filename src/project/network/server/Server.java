@@ -65,7 +65,7 @@ public final class Server extends Thread {
         Preprocessor.Builder builder = new QueryPreprocessor.Builder()
                 .setDenoiser(denoiser)
                 .setSpellCorrector(new SpellCorrector(correctWords, denoiser, similarities))
-                .setStemmer(Stemmer.ENGLISH);
+                .setStemmer(Stemmer.RUSSIAN);
 
         System.out.println("Database loaded...");
         new Server(new AnalyticalHandler(builder, DataBase.getInstance().getData())).start();

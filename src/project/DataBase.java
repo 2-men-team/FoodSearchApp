@@ -68,7 +68,7 @@ public final class DataBase implements Serializable {
     private static Set<String> processStopWords(String filename) throws IOException {
         Set<String> words = new HashSet<>();
 
-        try (Scanner scanner = new Scanner(new FileInputStream(filename))) {
+        try (Scanner scanner = new Scanner(new FileInputStream(filename), "utf-8")) {
             while (scanner.hasNext()) {
                 words.add(scanner.next());
             }
@@ -78,42 +78,35 @@ public final class DataBase implements Serializable {
     }
 
     private Map<String, Set<Dish>> processDataSet(String filename, String separator) throws IOException {
-        Map<String, Restaurant> map   = new HashMap<>();
+        Map<String, Restaurant> map = new HashMap<>();
         Map<String, Set<Dish>> dishes = new HashMap<>();
         Pattern pattern = Pattern.compile(separator);
-        Pattern wordPattern = Pattern.compile("[a-zA-Z]+");
         Preprocessor.Builder builder = new QueryPreprocessor.Builder()
                 .setDenoiser(new QueryDenoiser(stopWords))
-                .setStemmer(Stemmer.ENGLISH);
+                .setStemmer(Stemmer.RUSSIAN);
 
-        try (Scanner scanner = new Scanner(new FileInputStream(filename))) {
+        try (Scanner scanner = new Scanner(new FileInputStream(filename), "utf-8")) {
             while (scanner.hasNextLine()) {
                 String[] line = pattern.split(scanner.nextLine(), -1);
 
-                String name = line[0];
-                if (!map.containsKey(name)) {
-                    String description = line[1];
-                    Location location = Location.valueOf(line[2], line[3], description);
-                    map.put(name, new Restaurant(name, description, location));
-                }
+                String name = line[3];
+                String description = line[5].isEmpty() ? null : line[5];
+                map.computeIfAbsent(name, key -> new Restaurant(key, line[4], new Location(description)));
 
                 double price;
                 try {
-                    price = Double.parseDouble(line[5]);
+                    price = Double.parseDouble(line[2]);
                 } catch (NumberFormatException e) {
                     price = Double.NaN;
                 }
 
-                Dish dish = new Dish(line[4], map.get(name), price);
-                builder.build(line[4].trim().toLowerCase())
-                        .asStream()
+                Dish dish = new Dish(line[1], map.get(name), price);
+                builder.build(line[1].trim().toLowerCase()).asStream()
                         .filter(word -> word.length() > 2)
-                        .filter(wordPattern.asPredicate())
                         .forEach(word -> dishes.computeIfAbsent(word, k -> new HashSet<>()).add(dish));
             }
         }
 
-        dishes.entrySet().removeIf(entry -> entry.getValue().size() < 150);
         return dishes;
     }
 

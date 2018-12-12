@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 public final class QueryPreprocessor implements Preprocessor {
     @Language("RegExp")
-    public static final String DELIMITERS = "(\\s|\\d|\\p{Punct})+";
+    public static final String DELIMITERS = "(\\s|\\d|\\p{Punct}|[«»№])+";
 
     private final Denoiser denoiser;
     private final Function<String, String> mapper;

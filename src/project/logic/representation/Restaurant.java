@@ -58,6 +58,6 @@ public final class Restaurant implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Restaurant %s (%s)", name, location);
+        return String.format("Restaurant: %s (%s)", name, location);
     }
 }

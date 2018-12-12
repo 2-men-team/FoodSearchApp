@@ -13,6 +13,7 @@ import project.logic.strategies.handling.AnalyticalHandler;
 
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class Main {
     public static void main(String[] args) {
@@ -23,7 +24,7 @@ public final class Main {
         Preprocessor.Builder builder = new QueryPreprocessor.Builder()
                 .setDenoiser(denoiser)
                 .setSpellCorrector(new SpellCorrector(correctWords, denoiser, similarities))
-                .setStemmer(Stemmer.ENGLISH);
+                .setStemmer(Stemmer.RUSSIAN);
 
         AnalyticalHandler handler = new AnalyticalHandler(builder, DataBase.getInstance().getData());
 
@@ -35,7 +36,12 @@ public final class Main {
                     .stream()
                     .sorted(Result.<Dish>comparingByRank().reversed())
                     .limit(20)
-                    .forEach(System.out::println);
+                    .collect(Collectors.groupingBy(elem -> elem.getData().getRestaurant()))
+                    .forEach((restaurant, results) -> {
+                        System.out.println(restaurant);
+                        results.forEach(System.out::println);
+                        System.out.println();
+                    });
             System.out.print("> ");
         }
     }
