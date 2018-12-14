@@ -1,23 +1,20 @@
 #!/bin/bash
 
-if [[ $1 == 'copy' ]]
-then
-  cp out/artifacts/RestaurantSearchApp_jar/RestaurantSearchApp.jar ./
-  shift
+if [[ $1 == 'copy' ]]; then
+    cp out/artifacts/RestaurantSearchApp_jar/RestaurantSearchApp.jar ./
+    exit
 fi
 
-if [[ -z "$1" ]]
-then
-  Mode='SERVER'
-else
-  Mode=${1^^}
-fi
+Lang='russian'
+Mode='SERVER'
 
-if [[ -z "$2" ]]
-then
-  Lang='russian'
-else
-  Lang="$2"
-fi
+while (( "$#" >= 2 )); do
+    if [[ $1 == '-L' ]]; then
+        Lang="$2"
+    elif [[ $1 == '-M' ]]; then
+        Mode=${2^^}
+    fi
+    shift 2
+done
 
-java -Dua.kpi.restaurants.Config.properties=resources/${Lang}.properties -jar RestaurantSearchApp.jar --mode=${Mode}
+java -Dua.kpi.restaurants.Config.properties=resources/${Lang}.properties -jar RestaurantSearchApp.jar --mode=${Mode} "$@"
