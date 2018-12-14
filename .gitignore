@@ -1,4 +1,5 @@
 .idea/
-out/
-data/db_en.ser
-data/db_ru.ser
+out/*
+resources/db_en.ser
+resources/db_ru.ser
+RestaurantSearchApp.jar
