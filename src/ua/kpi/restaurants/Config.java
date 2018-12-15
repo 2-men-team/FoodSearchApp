@@ -21,6 +21,9 @@ public final class Config {
 
   private Config() {
     String filename = System.getProperty("ua.kpi.restaurants.Config.properties");
+    if (filename == null) {
+      throw new IllegalArgumentException("Properties filename is not defined.");
+    }
 
     try (InputStream stream = new FileInputStream(filename)) {
       properties.load(stream);
