@@ -2,10 +2,8 @@ package ua.kpi.restaurants.test;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ua.kpi.restaurants.Config;
 import ua.kpi.restaurants.logic.common.utils.Serializer;
 import ua.kpi.restaurants.logic.representation.Location;
-import ua.kpi.restaurants.logic.strategies.handling.HandlingStrategy;
 import ua.kpi.restaurants.network.data.Request;
 import ua.kpi.restaurants.network.data.Response;
 
@@ -43,13 +41,7 @@ public final class Client extends Thread {
         if (response.getStatus() == Response.Status.FAILURE) {
           System.out.println(response.getMessage());
         } else {
-          response.getData().stream()
-              .sorted(HandlingStrategy.Result.comparingByRank().reversed())
-              .forEach(result -> {
-                System.out.println(result.getRestaurant());
-                result.getDishes().forEach(System.out::println);
-                System.out.println();
-              });
+          response.getData().forEach(System.out::println);
         }
 
         System.out.print("> ");

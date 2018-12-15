@@ -6,11 +6,16 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public interface Preprocessor extends Iterator<String> {
+public interface Preprocessor extends Iterator<String>, Iterable<String> {
+  @NotNull
+  @Override
+  default Iterator<String> iterator() {
+    return this;
+  }
+
   @NotNull
   default Stream<String> asStream() {
-    Iterable<String> iterable = () -> this;
-    return StreamSupport.stream(iterable.spliterator(), false);
+    return StreamSupport.stream(spliterator(), false);
   }
 
   interface Builder {

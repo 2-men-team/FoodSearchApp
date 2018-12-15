@@ -1,9 +1,9 @@
 package ua.kpi.restaurants;
 
 import org.jetbrains.annotations.NotNull;
-import ua.kpi.restaurants.data.EnglishLoader;
+import ua.kpi.restaurants.data.EnglishProperties;
 import ua.kpi.restaurants.data.LanguageProperties;
-import ua.kpi.restaurants.data.RussianLoader;
+import ua.kpi.restaurants.data.RussianProperties;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,12 +12,12 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public final class Config {
+  private final Properties properties = new Properties();
+  private final LanguageProperties languageProperties;
+
   private static final class InstanceHolder {
     private static final Config instance = new Config();
   }
-
-  private final Properties properties = new Properties();
-  private final LanguageProperties languageProperties;
 
   private Config() {
     String filename = System.getProperty("ua.kpi.restaurants.Config.properties");
@@ -27,8 +27,7 @@ public final class Config {
     } catch (FileNotFoundException e) {
       throw new IllegalArgumentException("Invalid property: 'ua.kpi.restaurants.Config.properties'", e);
     } catch (IOException e) {
-      String message = String.format("Exception while reading from '%s'", filename);
-      throw new RuntimeException(message, e);
+      throw new RuntimeException(String.format("Exception while reading from '%s'", filename), e);
     }
 
     String language = properties.getProperty("ua.kpi.restaurants.Config.language");
@@ -38,10 +37,10 @@ public final class Config {
 
     switch (language) {
       case "eng":
-        languageProperties = new EnglishLoader();
+        languageProperties = new EnglishProperties();
         break;
       case "rus":
-        languageProperties = new RussianLoader();
+        languageProperties = new RussianProperties();
         break;
       default:
         throw new IllegalArgumentException("Invalid property: 'ua.kpi.restaurants.Config.language'");

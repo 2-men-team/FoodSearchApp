@@ -1,34 +1,34 @@
 package ua.kpi.restaurants.logic.strategies.handling;
 
 import org.jetbrains.annotations.NotNull;
-import ua.kpi.restaurants.logic.representation.Dish;
-import ua.kpi.restaurants.logic.representation.Restaurant;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
 @FunctionalInterface
-public interface HandlingStrategy extends Function<String, List<HandlingStrategy.Result>> {
-  @NotNull List<Result> apply(@NotNull String query);
+public interface HandlingStrategy<R> extends Function<String, List<HandlingStrategy.Result<R>>> {
+  @NotNull List<Result<R>> apply(@NotNull String query);
 
-  interface Result {
+  interface Result<E> {
     double getRank();
 
-    @NotNull Restaurant getRestaurant();
+    @NotNull E getData();
 
-    @NotNull List<Dish> getDishes();
-
-    static Comparator<Result> comparingByRank() {
+    static <E> Comparator<Result<E>> comparingByRank() {
       return Comparator.comparingDouble(Result::getRank);
     }
 
-    static Comparator<Result> comparingByRank(@NotNull Comparator<? super Double> comparator) {
+    static <E> Comparator<Result<E>> comparingByRank(@NotNull Comparator<? super Double> comparator) {
       return Comparator.comparing(Result::getRank, comparator);
     }
 
-    static Comparator<Result> comparingByRestaurant(@NotNull Comparator<? super Restaurant> comparator) {
-      return Comparator.comparing(Result::getRestaurant, comparator);
+    static <E extends Comparable<? super E>> Comparator<Result<E>> comparingByData() {
+      return Comparator.comparing(Result::getData);
+    }
+
+    static <E> Comparator<Result<E>> comparingByData(@NotNull Comparator<? super E> comparator) {
+      return Comparator.comparing(Result::getData, comparator);
     }
   }
 }

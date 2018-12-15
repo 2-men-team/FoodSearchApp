@@ -4,13 +4,18 @@ import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import ua.kpi.restaurants.logic.strategies.preprocessing.routines.Denoiser;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Queue;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public final class QueryPreprocessor implements Preprocessor {
   @Language("RegExp")
-  public static final String DELIMITERS = "(\\s|\\d|\\p{Punct}|[«»№])+";
+  public static final String DELIMITERS = "(\\s|\\p{Punct}|[«»№])+";
 
   private final Predicate<String> predicate;
   private final Function<String, String> mapper;
@@ -72,7 +77,7 @@ public final class QueryPreprocessor implements Preprocessor {
       return this;
     }
 
-    public Builder addFilter(Predicate<String> predicate) {
+    public Builder addFilter(@NotNull Predicate<String> predicate) {
       this.predicates.add(predicate);
       return this;
     }

@@ -5,7 +5,6 @@ import com.owlike.genson.GensonBuilder;
 import com.owlike.genson.reflect.VisibilityFilter;
 import org.jetbrains.annotations.NotNull;
 import ua.kpi.restaurants.logic.common.exceptions.InvalidQueryException;
-import ua.kpi.restaurants.logic.strategies.handling.AnalyticalHandler;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -26,10 +25,6 @@ public final class Serializer {
       .useMethods(false)
       .useConstructorWithArguments(true)
       .setThrowExceptionIfNoDebugInfo(true)
-      .setSkipNull(true)
-      .useRuntimeType(true)
-      .useClassMetadata(true)
-      .addAlias("Result", AnalyticalHandler.AnalyticalResult.class)
       .create();
 
   private Serializer() { }
@@ -57,7 +52,6 @@ public final class Serializer {
   public static void serializeJson(@NotNull OutputStream stream, Object object) {
     DataOutputStream out = new DataOutputStream(stream);
     byte[] json = genson.serializeBytes(object);
-    System.out.println(genson.serialize(object));
 
     try {
       out.writeInt(json.length);

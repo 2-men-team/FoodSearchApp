@@ -98,8 +98,9 @@ public final class DataBase implements Serializable {
         Restaurant current = map.putIfAbsent(restaurant.getName(), restaurant);
 
         Dish dish = properties.parseDish(line, current != null ? current : restaurant);
-        builder.build(dish.getDescription().trim().toLowerCase()).asStream()
-            .forEach(word -> dishes.computeIfAbsent(word, k -> new HashSet<>()).add(dish));
+        for (String word : builder.build(dish.getDescription().trim().toLowerCase())) {
+          dishes.computeIfAbsent(word, k -> new HashSet<>()).add(dish);
+        }
       }
     }
 

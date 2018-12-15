@@ -3,6 +3,7 @@ package ua.kpi.restaurants.network.server;
 import org.jetbrains.annotations.NotNull;
 import ua.kpi.restaurants.logic.common.exceptions.ProjectRuntimeException;
 import ua.kpi.restaurants.logic.common.utils.Serializer;
+import ua.kpi.restaurants.logic.representation.Dish;
 import ua.kpi.restaurants.logic.strategies.handling.HandlingStrategy;
 import ua.kpi.restaurants.logic.strategies.handling.HandlingStrategy.Result;
 import ua.kpi.restaurants.network.data.Request;
@@ -15,9 +16,9 @@ import java.util.stream.Collectors;
 
 final class Worker implements Runnable {
   private final Socket socket;
-  private final HandlingStrategy handler;
+  private final HandlingStrategy<Dish> handler;
 
-  Worker(@NotNull Socket socket, @NotNull HandlingStrategy handler) {
+  Worker(@NotNull Socket socket, @NotNull HandlingStrategy<Dish> handler) {
     this.socket  = socket;
     this.handler = handler;
   }
@@ -30,8 +31,11 @@ final class Worker implements Runnable {
 
       Response response;
       try {
-        List<Result> data = handler.apply(request.getQuery()).stream()
-            .sorted(Result.comparingByRank().reversed()).limit(20)
+        List<Dish> data = handler.apply(request.getQuery())
+            .stream()
+            .sorted(Result.<Dish>comparingByRank().reversed())
+            .limit(20)
+            .map(Result::getData)
             .collect(Collectors.toList());
 
         response = Response.success(null, data);

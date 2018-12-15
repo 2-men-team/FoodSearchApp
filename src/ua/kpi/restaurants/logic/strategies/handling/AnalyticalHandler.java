@@ -2,14 +2,16 @@ package ua.kpi.restaurants.logic.strategies.handling;
 
 import org.jetbrains.annotations.NotNull;
 import ua.kpi.restaurants.logic.representation.Dish;
-import ua.kpi.restaurants.logic.representation.Restaurant;
 import ua.kpi.restaurants.logic.strategies.preprocessing.Preprocessor;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public final class AnalyticalHandler implements HandlingStrategy {
+public final class AnalyticalHandler implements HandlingStrategy<Dish> {
   private final Preprocessor.Builder builder;
   private final Map<String, Set<Dish>> data;
 
@@ -18,14 +20,12 @@ public final class AnalyticalHandler implements HandlingStrategy {
     this.data = data;
   }
 
-  public static final class AnalyticalResult implements Result {
-    private final Restaurant restaurant;
-    private final List<Dish> dishes;
+  public static final class AnalyticalResult implements Result<Dish> {
+    private final Dish data;
     private double rank;
 
-    private AnalyticalResult(@NotNull Restaurant restaurant, @NotNull List<Dish> dishes, double rank) {
-      this.restaurant = restaurant;
-      this.dishes = dishes;
+    private AnalyticalResult(@NotNull Dish data, double rank) {
+      this.data = data;
       this.rank = rank;
     }
 
@@ -35,13 +35,8 @@ public final class AnalyticalHandler implements HandlingStrategy {
     }
 
     @Override
-    public @NotNull List<Dish> getDishes() {
-      return dishes;
-    }
-
-    @Override
-    public @NotNull Restaurant getRestaurant() {
-      return restaurant;
+    public @NotNull Dish getData() {
+      return data;
     }
 
     @Override
@@ -50,43 +45,32 @@ public final class AnalyticalHandler implements HandlingStrategy {
       if (o == this) return true;
       if (o.getClass() != this.getClass()) return false;
       AnalyticalResult that = (AnalyticalResult) o;
-      return this.restaurant.equals(that.restaurant);
+      return this.data.equals(that.data);
     }
 
     @Override
     public int hashCode() {
-      return restaurant.hashCode();
+      return data.hashCode();
     }
 
     @Override
     public String toString() {
-      return String.format("AnalyticalResult: %s (rank: %.4f)", restaurant, rank);
+      return String.format("AnalyticalResult: %s (rank: %.4f)", data, rank);
     }
   }
 
   @Override
-  public @NotNull List<Result> apply(@NotNull String query) {
-    Map<Dish, Long> map = builder.build(query.trim().toLowerCase()).asStream()
-        .flatMap(entry -> data.get(entry).stream())
-        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+  public @NotNull List<Result<Dish>> apply(@NotNull String query) {
+    Map<Dish, AnalyticalResult> map = new HashMap<>();
 
-    Map<Restaurant, AnalyticalResult> resultMap = new HashMap<>();
-    for (Map.Entry<Dish, Long> entry : map.entrySet()) {
-      Dish dish = entry.getKey();
-      Restaurant restaurant = dish.getRestaurant();
-      double rank = entry.getValue();
-
-      AnalyticalResult result = resultMap
-          .computeIfAbsent(restaurant, key -> new AnalyticalResult(key, new ArrayList<>(), 0.0));
-      result.dishes.add(dish);
-      result.rank += rank;
+    for (String word : builder.build(query.trim().toLowerCase())) {
+      for (Dish dish : data.getOrDefault(word, Collections.emptySet())) {
+        AnalyticalResult result = map
+            .computeIfAbsent(dish, key -> new AnalyticalResult(key, 0.0));
+        result.rank++;
+      }
     }
 
-    resultMap.values().forEach(result -> {
-      result.rank /= result.dishes.size();
-      result.dishes.sort(Dish.comparingByPrice().reversed());
-    });
-
-    return new ArrayList<>(resultMap.values());
+    return new ArrayList<>(map.values());
   }
 }

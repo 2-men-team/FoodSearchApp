@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public class EnglishLoader implements LanguageProperties {
+public class EnglishProperties implements LanguageProperties {
   @Override
   public @NotNull Location parseLocation(@NotNull String[] line) {
     return Location.valueOf(line[2], line[3], line[1]);
