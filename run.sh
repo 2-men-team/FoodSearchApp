@@ -7,14 +7,17 @@ fi
 
 Lang='russian'
 Mode='SERVER'
+Dir='resources'
 
 while (( "$#" >= 2 )); do
     if [[ $1 == '-L' ]]; then
         Lang="$2"
     elif [[ $1 == '-M' ]]; then
         Mode=${2^^}
+    elif [[ $1 == '-D' ]]; then
+        Dir="$2"
     fi
     shift 2
 done
 
-java -Dua.kpi.restaurants.Config.properties=resources/${Lang}.properties -jar RestaurantSearchApp.jar --mode=${Mode} "$@"
+java -Dua.kpi.restaurants.Config.properties=${Dir}/${Lang}.properties -jar RestaurantSearchApp.jar --mode=${Mode} "$@"
