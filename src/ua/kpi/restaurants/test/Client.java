@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import ua.kpi.restaurants.logic.common.exceptions.ProjectRuntimeException;
 import ua.kpi.restaurants.logic.common.utils.Serializer;
 import ua.kpi.restaurants.logic.representation.Location;
+import ua.kpi.restaurants.network.data.Ordering;
 import ua.kpi.restaurants.network.data.Request;
 import ua.kpi.restaurants.network.data.Response;
 
@@ -36,7 +37,8 @@ public final class Client extends Thread {
       String query = scanner.nextLine().trim().toLowerCase();
 
       try (Socket socket = new Socket(host, port)) {
-        Serializer.serializeJson(socket.getOutputStream(), new Request(name, query, location));
+        Request request = new Request(name, query, location, Ordering.BY_PRICE, Ordering.Rule.REVERSED);
+        Serializer.serializeJson(socket.getOutputStream(), request);
         Response response = Serializer.deserializeJson(socket.getInputStream(), Response.class);
 
         if (response.getStatus() == Response.Status.FAILURE) {

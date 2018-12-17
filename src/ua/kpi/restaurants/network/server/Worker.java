@@ -12,8 +12,8 @@ import ua.kpi.restaurants.network.data.Response;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -38,14 +38,17 @@ final class Worker implements Runnable {
 
       Response response;
       try {
-        List<Dish> data = handler.apply(request.getQuery())
-            .stream()
-            .sorted(Result.<Dish>comparingByRank().reversed())
+        List<Result<Dish>> data = handler.apply(request.getQuery());
+        Comparator<Result<Dish>> comparator = request.getOrdering().apply(request);
+        comparator = request.getRule().apply(comparator);
+
+        List<Dish> result = data.stream()
+            .sorted(comparator)
             .limit(20)
             .map(Result::getData)
             .collect(Collectors.toList());
 
-        response = Response.success(null, data);
+        response = Response.success(null, result);
       } catch (UserCausedException e) {
         LOGGER.info("Caught UserCausedException: " + e.getMessage());
         String template = "Failed while processing data for %s: %s";
