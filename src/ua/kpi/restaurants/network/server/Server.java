@@ -6,10 +6,13 @@ import ua.kpi.restaurants.logic.strategies.handling.HandlingStrategy;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 public final class Server extends Thread {
+  private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
   public static final int DEFAULT_POOL_SIZE = 15;
 
   private final HandlingStrategy<Dish> handler;
@@ -29,22 +32,30 @@ public final class Server extends Thread {
 
   private static int validatePoolSize(int size) {
     if (size <= 0) {
-      throw new IllegalArgumentException("Pool size must be > 0.");
+      RuntimeException e = new IllegalArgumentException("Pool size must be > 0.");
+      LOGGER.throwing(Server.class.getName(), "validatePoolSize", e);
+      throw e;
     }
 
     return size;
   }
 
+  @SuppressWarnings("InfiniteLoopStatement")
   @Override
   public void run() {
+    LOGGER.entering(Server.class.getName(), "run");
     try (ServerSocket server = new ServerSocket(port)) {
-      System.out.println("Server is running...");
-      // noinspection InfiniteLoopStatement
+      LOGGER.info(String.format("Server is running at port %d...", port));
+
       while (true) {
-        pool.execute(new Worker(server.accept(), handler));
+        Socket socket = server.accept();
+        LOGGER.finest("Have an input connection" + socket.getInetAddress().getHostAddress());
+        pool.execute(new Worker(socket, handler));
       }
     } catch (IOException e) {
-      throw new RuntimeException("Error while running a server", e);
+      LOGGER.severe("Caught IOException: " + e.getMessage());
     }
+
+    LOGGER.exiting(Server.class.getName(), "run");
   }
 }

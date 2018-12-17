@@ -6,7 +6,8 @@ public final class Levenstein implements Metric<String, Integer> {
   private static final long serialVersionUID = -928827437231971185L;
 
   @Override
-  public Integer compute(@NotNull String a, @NotNull String b) {
+  @NotNull
+  public Integer apply(@NotNull String a, @NotNull String b) {
     int n = a.length(), m = b.length();
 
     if (n == 0) return m;

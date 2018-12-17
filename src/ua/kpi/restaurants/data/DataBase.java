@@ -1,9 +1,9 @@
 package ua.kpi.restaurants.data;
 
 import org.jetbrains.annotations.NotNull;
-import ua.kpi.restaurants.Config;
 import ua.kpi.restaurants.logic.common.algorithms.BKTreeSet;
 import ua.kpi.restaurants.logic.common.algorithms.SimilaritySet;
+import ua.kpi.restaurants.logic.common.exceptions.ProjectRuntimeException;
 import ua.kpi.restaurants.logic.strategies.preprocessing.Preprocessor;
 import ua.kpi.restaurants.logic.strategies.preprocessing.QueryPreprocessor;
 import ua.kpi.restaurants.logic.strategies.preprocessing.routines.QueryDenoiser;
@@ -38,20 +38,20 @@ public final class DataBase implements Serializable {
 
     static {
       try {
-        String db = Config.getInstance().getProperty("ua.kpi.restaurants.Config.dataBase");
+        String db = Config.getInstance().getProperty("ua.kpi.restaurants.data.Config.dataBase");
 
         if (Files.exists(Paths.get(db))) {
           ourInstance = (DataBase) Serializer.deserializeNative(db);
         } else {
-          String stopWords = Config.getInstance().getProperty("ua.kpi.restaurants.Config.stopWords");
-          String dataSet = Config.getInstance().getProperty("ua.kpi.restaurants.Config.dataSet");
-          String delimiter = Config.getInstance().getProperty("ua.kpi.restaurants.Config.dataSet.delimiter");
+          String stopWords = Config.getInstance().getProperty("ua.kpi.restaurants.data.Config.stopWords");
+          String dataSet = Config.getInstance().getProperty("ua.kpi.restaurants.data.Config.dataSet");
+          String delimiter = Config.getInstance().getProperty("ua.kpi.restaurants.data.Config.dataSet.delimiter");
 
           ourInstance = new DataBase(stopWords, dataSet, delimiter);
           Serializer.serializeNative(db, ourInstance);
         }
       } catch (IOException | ClassNotFoundException e) {
-        throw new RuntimeException("Error while loading database", e);
+        throw new ProjectRuntimeException("Error while loading database", e);
       }
     }
   }
@@ -83,7 +83,7 @@ public final class DataBase implements Serializable {
     Map<String, Restaurant> map = new HashMap<>();
     Map<String, Set<Dish>> dishes = new HashMap<>();
     Pattern pattern = Pattern.compile(sep);
-    LanguageProperties properties = Config.getInstance().getLanguageProperties();
+    LanguageProperties properties = Config.getInstance().getLanguage().getProperties();
     Preprocessor.Builder builder = new QueryPreprocessor.Builder()
         .setDenoiser(new QueryDenoiser(stopWords))
         .setStemmer(properties.getStemmer())

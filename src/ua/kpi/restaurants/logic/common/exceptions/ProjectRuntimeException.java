@@ -1,6 +1,10 @@
 package ua.kpi.restaurants.logic.common.exceptions;
 
 public class ProjectRuntimeException extends RuntimeException {
+  public ProjectRuntimeException() {
+    super();
+  }
+
   public ProjectRuntimeException(String message) {
     super(message);
   }

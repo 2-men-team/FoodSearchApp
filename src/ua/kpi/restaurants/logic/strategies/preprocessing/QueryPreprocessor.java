@@ -5,9 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import ua.kpi.restaurants.logic.strategies.preprocessing.routines.Denoiser;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.function.Function;
@@ -54,7 +52,7 @@ public final class QueryPreprocessor implements Preprocessor {
     private String delimiters = DELIMITERS;
     private Function<String, String> spellCorrector = Function.identity();
     private Function<String, String> stemmer = Function.identity();
-    private List<Predicate<String>> predicates = new ArrayList<>();
+    private Predicate<String> predicate = word -> true;
     private Denoiser denoiser = Denoiser.DUMMY;
 
     public Builder setDelimiters(@NotNull String delimiters) {
@@ -78,7 +76,7 @@ public final class QueryPreprocessor implements Preprocessor {
     }
 
     public Builder addFilter(@NotNull Predicate<String> predicate) {
-      this.predicates.add(predicate);
+      this.predicate = this.predicate.and(predicate);
       return this;
     }
 
@@ -86,8 +84,9 @@ public final class QueryPreprocessor implements Preprocessor {
     @Override
     public Preprocessor build(@NotNull String query) {
       Predicate<String> noise = denoiser::isNoise;
-      Predicate<String> predicate = predicates.stream().reduce(noise.negate(), Predicate::and);
-      return new QueryPreprocessor(delimiters, predicate, stemmer.andThen(spellCorrector), query);
+      Predicate<String> filter = noise.negate().and(predicate);
+      Function<String, String> mapper = stemmer.andThen(spellCorrector);
+      return new QueryPreprocessor(delimiters, filter, mapper, query);
     }
   }
 }

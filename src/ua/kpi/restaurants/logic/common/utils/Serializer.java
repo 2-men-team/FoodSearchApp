@@ -5,6 +5,7 @@ import com.owlike.genson.GensonBuilder;
 import com.owlike.genson.reflect.VisibilityFilter;
 import org.jetbrains.annotations.NotNull;
 import ua.kpi.restaurants.logic.common.exceptions.InvalidQueryException;
+import ua.kpi.restaurants.logic.common.exceptions.ProjectRuntimeException;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,7 +20,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 
 public final class Serializer {
-  private static final Genson genson = new GensonBuilder()
+  private static final Genson GENSON = new GensonBuilder()
       .setFieldFilter(VisibilityFilter.PRIVATE)
       .setConstructorFilter(VisibilityFilter.ALL)
       .useMethods(false)
@@ -51,14 +52,14 @@ public final class Serializer {
 
   public static void serializeJson(@NotNull OutputStream stream, Object object) {
     DataOutputStream out = new DataOutputStream(stream);
-    byte[] json = genson.serializeBytes(object);
+    byte[] json = GENSON.serializeBytes(object);
 
     try {
       out.writeInt(json.length);
       out.write(json);
       out.flush();
     } catch (IOException e) {
-      throw new RuntimeException("Error while serializing to stream", e);
+      throw new ProjectRuntimeException("Error while serializing to stream", e);
     }
   }
 
@@ -75,11 +76,11 @@ public final class Serializer {
       json = new byte[size];
       in.readFully(json);
     } catch (EOFException e) {
-      throw new InvalidQueryException("Query format mismatch.", e);
+      throw new InvalidQueryException("Mismatch between query size and the query itself.", e);
     } catch (IOException e) {
-      throw new RuntimeException("Error while deserializing from stream", e);
+      throw new ProjectRuntimeException("Error while deserializing from stream", e);
     }
 
-    return genson.deserialize(json, clazz);
+    return GENSON.deserialize(json, clazz);
   }
 }

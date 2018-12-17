@@ -1,6 +1,10 @@
 package ua.kpi.restaurants.logic.common.exceptions;
 
-public class InvalidQueryException extends ProjectRuntimeException {
+public class InvalidQueryException extends UserCausedException {
+  public InvalidQueryException() {
+    super();
+  }
+
   public InvalidQueryException(String message) {
     super(message);
   }

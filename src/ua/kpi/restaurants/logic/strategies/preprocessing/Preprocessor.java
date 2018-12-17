@@ -18,6 +18,7 @@ public interface Preprocessor extends Iterator<String>, Iterable<String> {
     return StreamSupport.stream(spliterator(), false);
   }
 
+  @FunctionalInterface
   interface Builder {
     @NotNull Preprocessor build(@NotNull String query);
   }

@@ -20,4 +20,6 @@ while (( "$#" >= 2 )); do
     shift 2
 done
 
-java -Dua.kpi.restaurants.Config.properties=${Dir}/${Lang}.properties -jar RestaurantSearchApp.jar --mode=${Mode} "$@"
+java -Dua.kpi.restaurants.data.Config.properties=${Dir}/${Lang}.properties \
+    -Djava.util.logging.config.file=resources/logging.properties \
+    -jar RestaurantSearchApp.jar --mode=${Mode} "$@"

@@ -87,7 +87,9 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
 
     private BKTreeIterator(@Nullable Node node) {
       this.queue = new ArrayDeque<>();
-      if (node != null) this.queue.add(node);
+      if (node != null) {
+        this.queue.add(node);
+      }
     }
 
     @Override
@@ -101,7 +103,7 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
         throw new NoSuchElementException("Iterator has no elements to iterate.");
       }
 
-      Node node = Objects.requireNonNull(queue.poll());
+      Node node = Objects.requireNonNull(queue.poll(), "Word must not be null");
       queue.addAll(node.next.values());
       return node.word;
     }
@@ -118,7 +120,7 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
       Node node = queue.poll();
       if (node == null) continue;
 
-      int dist = metric.compute(node.word, s);
+      int dist = metric.apply(node.word, s);
       if (node.word.charAt(0) == s.charAt(0) && dist <= threshold)
       { node.sim = dist; result.add(node); }
       int low = Math.max(1, dist - threshold), high = dist + threshold + 1;
@@ -144,7 +146,7 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
     Node node = root;
 
     while (node != null) {
-      int dist = metric.compute(node.word, s);
+      int dist = metric.apply(node.word, s);
       if (dist == 0) return true;
       node = node.next.get(dist);
     }
@@ -159,11 +161,12 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
 
   @Override
   public boolean add(@NotNull String s) {
-    if (root == null) root = new Node(s);
-    else {
+    if (root == null) {
+      root = new Node(s);
+    } else {
       Node node = root;
       while (true) {
-        int dist = metric.compute(s, node.word);
+        int dist = metric.apply(s, node.word);
         if (dist == 0) return false;
         if (node.next.containsKey(dist)) node = node.next.get(dist);
         else { node.next.put(dist, new Node(s)); break; }

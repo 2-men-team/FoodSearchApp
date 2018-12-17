@@ -2,6 +2,7 @@ package ua.kpi.restaurants.test;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ua.kpi.restaurants.logic.common.exceptions.ProjectRuntimeException;
 import ua.kpi.restaurants.logic.common.utils.Serializer;
 import ua.kpi.restaurants.logic.representation.Location;
 import ua.kpi.restaurants.network.data.Request;
@@ -44,9 +45,10 @@ public final class Client extends Thread {
           response.getData().forEach(System.out::println);
         }
 
+        System.out.println();
         System.out.print("> ");
       } catch (IOException e) {
-        throw new RuntimeException("Error while sending a data", e);
+        throw new ProjectRuntimeException("Error while creating a socket", e);
       }
     }
   }
