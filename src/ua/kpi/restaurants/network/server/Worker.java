@@ -40,10 +40,8 @@ final class Worker implements Runnable {
       try {
         List<Result<Dish>> data = handler.apply(request.getQuery());
         Comparator<Result<Dish>> comparator = request.getOrdering().apply(request);
-        comparator = request.getRule().apply(comparator);
-
         List<Dish> result = data.stream()
-            .sorted(comparator)
+            .sorted(request.getRule().apply(comparator))
             .limit(20)
             .map(Result::getData)
             .collect(Collectors.toList());
