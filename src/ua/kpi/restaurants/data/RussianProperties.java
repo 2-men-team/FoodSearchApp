@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class RussianProperties implements LanguageProperties {
+public final class RussianProperties implements LanguageProperties {
   @Override
   public @NotNull Location parseLocation(@NotNull String[] line) {
     return line[5].isEmpty() ? Location.NONE : new Location(line[5]);
