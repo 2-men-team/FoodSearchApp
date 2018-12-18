@@ -49,7 +49,7 @@ public final class Server extends Thread {
 
       while (true) {
         Socket socket = server.accept();
-        LOGGER.finest("Have an input connection" + socket.getInetAddress().getHostAddress());
+        LOGGER.finest("Have an input connection " + socket.getInetAddress().getHostAddress());
         pool.execute(new Worker(socket, handler));
       }
     } catch (IOException e) {

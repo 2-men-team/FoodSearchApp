@@ -10,37 +10,38 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 public enum Ordering implements Function<Request, Comparator<Result<Dish>>> {
-  BY_PRICE {
-    @Override public Comparator<Result<Dish>> apply(@NotNull Request request) {
-      return Result.comparingByData(Dish.comparingByPrice());
-    }
-  },
+  BY_RANK(request -> Result.comparingByRank()),
+  BY_PRICE(request -> Result.comparingByData(Dish.comparingByPrice())),
+  BY_LOCATION(request -> {
+    Comparator<Restaurant> restaurantComparator = Restaurant.comparingByLocation(request.getLocation());
+    Comparator<Dish> dishComparator = Comparator.comparing(Dish::getRestaurant, restaurantComparator);
+    return Result.comparingByData(dishComparator);
+  });
 
-  BY_LOCATION {
-    @Override public Comparator<Result<Dish>> apply(@NotNull Request request) {
-      Comparator<Restaurant> restaurantComparator = Restaurant.comparingByLocation(request.getLocation());
-      Comparator<Dish> dishComparator = Comparator.comparing(Dish::getRestaurant, restaurantComparator);
-      return Result.comparingByData(dishComparator);
-    }
-  },
+  private final Function<Request, Comparator<Result<Dish>>> mapper;
 
-  BY_RANK {
-    @Override public Comparator<Result<Dish>> apply(@NotNull Request request) {
-      return Result.comparingByRank();
-    }
-  };
+  Ordering(Function<Request, Comparator<Result<Dish>>> mapper) {
+    this.mapper = mapper;
+  }
+
+  @Override
+  public Comparator<Result<Dish>> apply(@NotNull Request request) {
+    return mapper.apply(request);
+  }
 
   public enum Rule implements UnaryOperator<Comparator<Result<Dish>>> {
-    NORMAL {
-      @Override public Comparator<Result<Dish>> apply(@NotNull Comparator<Result<Dish>> comparator) {
-        return comparator;
-      }
-    },
+    NORMAL(UnaryOperator.identity()),
+    REVERSED(Comparator::reversed);
 
-    REVERSED {
-      @Override public Comparator<Result<Dish>> apply(@NotNull Comparator<Result<Dish>> comparator) {
-        return comparator.reversed();
-      }
+    private final UnaryOperator<Comparator<Result<Dish>>> operator;
+
+    Rule(UnaryOperator<Comparator<Result<Dish>>> operator) {
+      this.operator = operator;
+    }
+
+    @Override
+    public Comparator<Result<Dish>> apply(@NotNull Comparator<Result<Dish>> comparator) {
+      return operator.apply(comparator);
     }
   }
 }
