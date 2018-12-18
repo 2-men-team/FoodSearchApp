@@ -29,6 +29,7 @@ public final class LevensteinTest {
     this.distance = distance;
   }
 
+  @NotNull
   @Parameters
   public static Collection<Object[]> data() {
     Object[][] list = new Object[n][3];
@@ -48,6 +49,6 @@ public final class LevensteinTest {
   @Test
   public void testLevensteinMetric() {
     Metric metric = new Levenstein();
-    assertEquals("Levenstein distance", distance, metric.apply(a, b));
+    assertEquals(distance, metric.apply(a, b));
   }
 }

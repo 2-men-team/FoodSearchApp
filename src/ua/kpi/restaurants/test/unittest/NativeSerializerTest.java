@@ -35,6 +35,7 @@ public class NativeSerializerTest {
     file.delete();
   }
 
+  @NotNull
   @Parameters
   public static Collection<Object[]> data() throws FileNotFoundException {
     Object[][] tests = new Object[n][1];
