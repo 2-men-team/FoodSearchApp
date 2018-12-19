@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -29,15 +30,6 @@ public final class TestHelper {
 
   @NotNull
   public static String join(@NotNull List<String> list) {
-    if (list.size() == 0) return "";
-    StringBuilder builder = new StringBuilder();
-
-    for (int i = 0; i < list.size() - 1; i++) {
-      builder.append(list.get(i));
-      builder.append(" ");
-    }
-
-    builder.append(list.get(list.size() - 1));
-    return builder.toString();
+    return String.join(" ", list);
   }
 }

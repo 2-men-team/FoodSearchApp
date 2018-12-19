@@ -7,13 +7,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="RestaurantSearchApp" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/annotations/16.0.2/annotations-16.0.2.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <LIBRARY_FILE />
         <SOURCES />
       </library>
     </orderEntry>
@@ -23,11 +23,27 @@
           <root url="jar://$MODULE_DIR$/lucene-snowball-3.0.2.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <LIBRARY_FILE />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="com.owlike:genson:1.4" level="project" />
     <orderEntry type="library" name="info.picocli:picocli:3.8.2" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/java-packages/junit-4.10.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/java-packages/genson-1.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

@@ -10,17 +10,18 @@ import ua.kpi.restaurants.logic.strategies.preprocessing.routines.Denoiser;
 import ua.kpi.restaurants.logic.strategies.preprocessing.routines.QueryDenoiser;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 import static ua.kpi.restaurants.logic.strategies.preprocessing.QueryPreprocessor.DELIMITERS;
 
 @RunWith(Parameterized.class)
 public final class DenoiserTest {
-  public static Denoiser denoiser;
+  private static Denoiser denoiser;
 
-  public final String actual;
-  public final String expected;
+  private final String actual;
+  private final String expected;
 
   public DenoiserTest(@NotNull String actual, @NotNull String expected) {
     this.actual = actual;
