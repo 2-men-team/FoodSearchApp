@@ -19,6 +19,10 @@ import static org.junit.runners.Parameterized.Parameters;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
+/**
+ * The {@code BKTreeSetSimilarityTest} represents testing class.
+ * It tests {@link BKTreeSet} {@code getSimilarTo} and {@code contains} methods.
+ */
 @RunWith(Parameterized.class)
 public class BKTreeSetSimilarityTest {
   private static final String TEST_FILE = "resources/tests/similarity.csv";
@@ -36,16 +40,31 @@ public class BKTreeSetSimilarityTest {
     }
   }
 
+  /**
+   * Initializes test parametes.
+   *
+   * @param word test word
+   */
   public BKTreeSetSimilarityTest(@NotNull String word) {
     this.word = word;
   }
 
+  /**
+   * Initializes {@link BKTreeSet} with {@code WORDS} from {@code TEST_FILE} file
+   */
   @BeforeClass
   public static void load() {
     tree = new BKTreeSet(new Levenstein());
     tree.addAll(WORDS);
   }
 
+  /**
+   * Loads the testing data from {@code TEST_FILE} file.
+   *
+   * @return  the collection {@code Collection<Object[]>} of objects
+   *          for testing
+   * @throws FileNotFoundException if {@code TEST_FILE} file is missing
+   */
   @NotNull
   @Parameters
   public static Collection<Object[]> data() throws FileNotFoundException {
@@ -61,6 +80,9 @@ public class BKTreeSetSimilarityTest {
     return tests;
   }
 
+  /**
+   * Tests the {@link BKTreeSet} {@code getSimilarTo} function.
+   */
   @Test
   public void testBKTreeSetSimilarity() {
     if (tree.contains(word)) {

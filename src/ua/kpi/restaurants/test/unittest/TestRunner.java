@@ -3,6 +3,11 @@ package ua.kpi.restaurants.test.unittest;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
+/**
+ * The {@code TestRunner} class provides testing
+ * client for major application components.
+ */
+
 public class TestRunner {
   public static void main(String[] args) {
     Result result = JUnitCore.runClasses(TestSuit.class);

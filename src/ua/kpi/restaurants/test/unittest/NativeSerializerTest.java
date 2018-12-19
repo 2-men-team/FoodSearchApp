@@ -15,6 +15,15 @@ import java.util.*;
 import static org.junit.runners.Parameterized.Parameters;
 import static org.junit.Assert.assertEquals;
 
+/**
+ * The {@code NativeSerializerTest} represents test class.
+ * It tests following methods of {@link Serializer} class.
+ *
+ * <ul>
+ *   <li>{@code serializeNative}</li>
+ *   <li>{@code deserializeNative}</li>
+ * </ul>
+ */
 @RunWith(Parameterized.class)
 public class NativeSerializerTest {
   private static final String TEST_INPUT_FILE = "resources/tests/serialize.csv";
@@ -22,16 +31,31 @@ public class NativeSerializerTest {
 
   private final String string;
 
+  /**
+   * Initialize test parameter.
+   *
+   * @param string test string
+   */
   public NativeSerializerTest(@NotNull String string) {
     this.string = string;
   }
 
+  /**
+   * Deletes {@code TEST_OUTPUT_FILE} helper file.
+   */
   @AfterClass
   public static void close() {
     File file = new File(TEST_OUTPUT_FILE);
     file.delete();
   }
 
+  /**
+   * Loads testing data.
+   *
+   * @return collection {@code Collection<Object[]>} of objects
+   *         for testing
+   * @throws FileNotFoundException if {@code TEST_INPUT_FILE} is missing
+   */
   @NotNull
   @Parameters
   public static Collection<Object[]> data() throws FileNotFoundException {
@@ -46,6 +70,13 @@ public class NativeSerializerTest {
     return tests;
   }
 
+  /**
+   * Tests {@link Serializer} {@code serializeNative}
+   * and {@code deserializeNative} methods.
+   *
+   * @throws IOException if {@code TEST_OUTPUT_FILE} is missing
+   * @throws ClassNotFoundException if deserialized class is not present
+   */
   @Test
   public void testNativeSerializer() throws IOException, ClassNotFoundException {
     Serializer.serializeNative(TEST_OUTPUT_FILE, string);

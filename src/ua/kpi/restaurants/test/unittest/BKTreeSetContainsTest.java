@@ -16,6 +16,10 @@ import java.util.stream.Collectors;
 import static org.junit.runners.Parameterized.Parameters;
 import static org.junit.Assert.assertTrue;
 
+/**
+ *  The {@code BKTreeContainsTest} represents test class.
+ *  It tests {@link BKTreeSet} {@code contains} method.
+ */
 @RunWith(Parameterized.class)
 public class BKTreeSetContainsTest {
   private static BKTreeSet tree;
@@ -31,25 +35,40 @@ public class BKTreeSetContainsTest {
     }
   }
 
+  /**
+   * Initializes test parameters
+   *
+   * @param word test word
+   */
   public BKTreeSetContainsTest(@NotNull String word) {
     this.word = word;
   }
 
+  /**
+   * Initializes {@link BKTreeSet} with {@code WORDS}
+   */
   @BeforeClass
-  public static void load() throws IOException {
+  public static void load() {
     tree = new BKTreeSet(new Levenstein());
     tree.addAll(WORDS);
   }
 
+  /**
+   * Creates collection of objects for testing.
+   *
+   * @return {@code Collection<Object[]>} collection of objects
+   */
   @NotNull
   @Parameters
-  public static Collection<Object[]> data() throws IOException {
-    return WORDS
-        .stream()
+  public static Collection<Object[]> data() {
+    return WORDS.stream()
         .map(word -> new Object[]{word})
         .collect(Collectors.toList());
   }
 
+  /**
+   * Tests {@link BKTreeSet} {@code contains} method.
+   */
   @Test
   public void testBKTreeSet() {
     assertTrue(tree.contains(word));
