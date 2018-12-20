@@ -7,7 +7,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * The {@code TestSuit} performs testing of major application components.
+ * The {@code TestSuit} class performs testing of major application components.
  *
  * It tests the following classes:
  *
