@@ -10,16 +10,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/annotations/16.0.2/annotations-16.0.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <LIBRARY_FILE />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/lucene-snowball-3.0.2.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -29,5 +19,6 @@
     </orderEntry>
     <orderEntry type="library" name="com.owlike:genson:1.4" level="project" />
     <orderEntry type="library" name="info.picocli:picocli:3.8.2" level="project" />
+    <orderEntry type="library" name="org.jetbrains:annotations:16.0.3" level="project" />
   </component>
 </module>

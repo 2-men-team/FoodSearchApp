@@ -8,7 +8,22 @@ import ua.kpi.restaurants.logic.strategies.handling.HandlingStrategy.Result;
 
 import java.util.Scanner;
 
+/**
+ * Simple testing of the algorithm without network involved
+ *
+ * Its benefit is that it shows ranks of computed results
+ */
 public final class Test {
+  private Test() {}
+
+  /**
+   * Executes test
+   *
+   * It uses console to read queries and prints results back
+   *
+   * @param strategy - strategy to be used for input query (must not be {@code null})
+   * @see HandlingStrategy
+   */
   public static void execute(@NotNull HandlingStrategy<Dish> strategy) {
     Scanner scanner = new Scanner(System.in, "utf-8");
     System.out.println("Start inputting queries (press Ctrl-D to break):");

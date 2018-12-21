@@ -17,17 +17,33 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * Handles user connection queries
+ *
+ * This class is intended to be used by {@link Server}
+ */
 final class Worker implements Runnable {
   private static final Logger LOGGER = Logger.getLogger(Worker.class.getName());
 
   private final Socket socket;
   private final HandlingStrategy<Dish> handler;
 
+  /**
+   * Constructs an instance of this class
+   *
+   * @param socket for the user connection (must not be {@code null})
+   * @param handler to handle user query (must not be {@code null})
+   */
   Worker(@NotNull Socket socket, @NotNull HandlingStrategy<Dish> handler) {
-    this.socket  = socket;
+    this.socket = socket;
     this.handler = handler;
   }
 
+  /**
+   * Executes this worker
+   *
+   * If any {@link ProjectRuntimeException} is thrown, failed {@link Response} is sent.
+   */
   @Override
   public void run() {
     LOGGER.entering(Worker.class.getName(), "run");

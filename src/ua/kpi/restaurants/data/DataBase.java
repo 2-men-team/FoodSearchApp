@@ -26,6 +26,43 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+/**
+ * Provides access to all the data used by the application. It follows {@code Singleton} pattern.
+ *
+ * It uses {@link Config#getProperty(String)} to get access to properties needed.
+ *
+ * {@code DataBase} uses the following properties:
+ * <ul>
+ *   <li>{@code ua.kpi.restaurants.data.Config.stopWords} - to get access to path to file containing stop words</li>
+ *   <li>{@code ua.kpi.restaurants.data.Config.dataSet} - to get access to path to file containing data set</li>
+ *   <li>{@code ua.kpi.restaurants.data.Config.dataBase} - to get access to path to file where data base should be serialized</li>
+ *   <li>{@code ua.kpi.restaurants.data.Config.dataSet.delimiter} - to get access to data set delimiter</li>
+ * </ul>
+ *
+ * If {@code ua.kpi.restaurants.data.Config.dataBase} contains no file, data base is initialized using properties defined
+ * above and serialized to that path. If that property has an appropriate file, it is deserialized and used as a data base instance.
+ * If deserialization is not possible, exception is thrown.
+ *
+ * It uses {@link LanguageProperties} instance from {@link Config} class.
+ *
+ * Main {@code index} contains mappings from words to {@link Dish} instances that have that word in their description.
+ * Dish descriptions are preprocessed according to the rules defined by {@link QueryPreprocessor}.
+ * The following preprocessing routines are set explicitly:
+ * <ul>
+ *   <li>{@link QueryDenoiser}</li>
+ *   <li>stemmer from {@link LanguageProperties#getStemmer()}</li>
+ *   <li>filter from {@link LanguageProperties#getWordConstraint()}</li>
+ * </ul>
+ *
+ * The final data is cleaned using the rules from {@link LanguageProperties#getDataConstraint()}.
+ *
+ * Similarities are initialized using {@link BKTreeSet} with {@link Levenstein} metric using keys from {@code index}.
+ *
+ * @see Config
+ * @see LanguageProperties
+ * @see BKTreeSet
+ * @see Levenstein
+ */
 public final class DataBase implements Serializable {
   private static final long serialVersionUID = -7408309477031815349L;
 
@@ -56,6 +93,12 @@ public final class DataBase implements Serializable {
     }
   }
 
+  /**
+   * Provides access to current {@code DataBase} instance.
+   * Initializes it in the case of first call.
+   * @return {@code DataBase} instance
+   * @throws ProjectRuntimeException if initialization failed
+   */
   public static DataBase getInstance() {
     return InstanceHolder.ourInstance;
   }
@@ -99,7 +142,7 @@ public final class DataBase implements Serializable {
 
         Dish dish = properties.parseDish(line, current != null ? current : restaurant);
         for (String word : builder.build(dish.getDescription().trim().toLowerCase())) {
-          dishes.computeIfAbsent(word, k -> new HashSet<>()).add(dish);
+          dishes.computeIfAbsent(word, key -> new HashSet<>()).add(dish);
         }
       }
     }
@@ -108,16 +151,28 @@ public final class DataBase implements Serializable {
     return dishes;
   }
 
+  /**
+   * Provides access to stop words set.
+   * @return {@link Set} containing stop words
+   */
   @NotNull
   public Set<String> getStopWords() {
     return stopWords;
   }
 
+  /**
+   * Provides access to the set of similar words.
+   * @return {@link SimilaritySet} instance of word similarities
+   */
   @NotNull
   public SimilaritySet<String> getSimilarities() {
     return similarities;
   }
 
+  /**
+   * Provides access to data available.
+   * @return {@link Map} containing mappings from words to corresponding dishes
+   */
   @NotNull
   public Map<String, Set<Dish>> getData() {
     return index;
