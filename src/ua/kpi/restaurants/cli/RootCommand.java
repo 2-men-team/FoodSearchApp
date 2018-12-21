@@ -20,11 +20,7 @@ import java.util.Set;
  *
  * It is responsible for {@link HandlingStrategy} initialization.
  */
-@Command(
-    name = "root",
-    subcommands = {ServerCommand.class, ClientCommand.class, TestCommand.class},
-    mixinStandardHelpOptions = true,
-    version = "0.1")
+@Command(subcommands = {ServerCommand.class, ClientCommand.class, TestCommand.class}, mixinStandardHelpOptions = true)
 public final class RootCommand implements Runnable {
   private final HandlingStrategy<Dish> strategy;
 
