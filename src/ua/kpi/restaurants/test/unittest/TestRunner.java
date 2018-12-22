@@ -9,7 +9,7 @@ import org.junit.runner.Result;
  */
 
 public class TestRunner {
-  public static void main(String[] args) {
+  public static void execute() {
     Result result = JUnitCore.runClasses(TestSuit.class);
 
     System.out.println("Total tests passed: " + result.getRunCount());

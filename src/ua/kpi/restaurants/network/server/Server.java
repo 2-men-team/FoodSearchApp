@@ -56,7 +56,7 @@ public final class Server {
    */
   @SuppressWarnings("InfiniteLoopStatement")
   public static void execute(@NotNull HandlingStrategy<Dish> strategy, int port, int poolSize) {
-    LOGGER.entering(Server.class.getName(), "run");
+    LOGGER.entering(Server.class.getName(), "execute");
 
     ExecutorService pool = Executors.newFixedThreadPool(validatePoolSize(poolSize));
 
@@ -72,6 +72,6 @@ public final class Server {
       LOGGER.severe("Caught IOException: " + e.getMessage());
     }
 
-    LOGGER.exiting(Server.class.getName(), "run");
+    LOGGER.exiting(Server.class.getName(), "execute");
   }
 }

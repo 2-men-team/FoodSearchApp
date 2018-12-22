@@ -10,11 +10,12 @@ import ua.kpi.restaurants.logic.common.exceptions.ProjectRuntimeException;
 import ua.kpi.restaurants.logic.common.utils.metrics.Levenstein;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.runners.Parameterized.Parameters;
 import static org.junit.Assert.assertTrue;
+import static org.junit.runners.Parameterized.Parameters;
 
 /**
  *  The {@code BKTreeContainsTest} represents test class.

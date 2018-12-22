@@ -22,7 +22,7 @@ import java.util.function.UnaryOperator;
  * Every enum value has a function to map from particular {@link Request} to the {@link Comparator}
  * for the corresponding order.
  *
- * Ordering is done for results of the {@link ua.kpi.restaurants.logic.strategies.handling.AnalyticalHandler}.
+ * Ordering is done on results of the {@link ua.kpi.restaurants.logic.strategies.handling.AnalyticalHandler}.
  */
 public enum Ordering implements Function<Request, Comparator<Result<Dish>>> {
   /** Provides ordering by rank */
