@@ -5,6 +5,12 @@ if [[ $1 == 'copy' ]]; then
     exit
 fi
 
+LoggingFolder='log'
+
+if [[ ! -d "$LoggingFolder" ]]; then
+    mkdir ${LoggingFolder}
+fi
+
 Lang='russian'
 Dir='resources'
 Command="$1"
