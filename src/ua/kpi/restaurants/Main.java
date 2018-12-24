@@ -4,6 +4,7 @@ import picocli.CommandLine;
 import ua.kpi.restaurants.cli.RootCommand;
 import ua.kpi.restaurants.logic.common.exceptions.ProjectRuntimeException;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 /**
@@ -19,6 +20,7 @@ public final class Main {
     LOGGER.entering(Main.class.getName(), "main");
 
     try {
+      LOGGER.fine("Arguments passed: " + Arrays.toString(args));
       CommandLine.run(new RootCommand(), args);
     } catch (ProjectRuntimeException e) {
       LOGGER.warning("Caught ProjectRuntimeException:\n" + e);
