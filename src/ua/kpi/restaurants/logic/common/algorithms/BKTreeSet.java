@@ -5,17 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import ua.kpi.restaurants.logic.common.utils.metrics.Metric;
 
 import java.io.Serializable;
-import java.util.AbstractSet;
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Implementation of the <a href="https://en.wikipedia.org/wiki/BK-tree">BK-tree</a> data structure.
@@ -168,6 +158,8 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
   @NotNull
   @Override
   public Set<Entry<String>> getSimilarTo(@NotNull String word) {
+    if (word.isEmpty()) return Collections.emptySet();
+
     Queue<Node> queue = new ArrayDeque<>();
     Set<Entry<String>> result = new HashSet<>();
 
@@ -177,8 +169,11 @@ public final class BKTreeSet extends AbstractSet<String> implements SimilaritySe
       if (node == null) continue;
 
       int dist = metric.apply(node.word, word);
-      if (node.word.charAt(0) == word.charAt(0) && dist <= threshold)
-      { node.sim = dist; result.add(node); }
+      if (node.word.charAt(0) == word.charAt(0) && dist <= threshold) {
+        node.sim = dist;
+        result.add(node);
+      }
+
       int low = Math.max(1, dist - threshold), high = dist + threshold + 1;
       queue.addAll(node.next.subMap(low, high).values());
     }
